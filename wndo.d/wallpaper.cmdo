@@ -1,0 +1,239 @@
+#===============================================================================
+#===============================================================================
+# wallpaper module for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+CMDO.doc.block(
+    'This module implements various desktop wallpaper manipulations.'
+)
+
+import os, os.path, random
+
+cfgWallpaper = CMDO.config('wallpaper', caseSensitive = True)
+
+# Wallpaper programs with option variations for tile, center, maxpect, scale (0, 1, 2), and display
+wallpaperers = [
+('Esetroot',
+    ('"%s"', '-center "%s"', '-fit "%s"', '-scale "%s"'),
+    '-display %s'),
+('feh',
+    ('--bg-tile "%s"', '--bg-center "%s"', '--bg-scale "%s"', '--bg-scale "%s"'),
+    None),
+('wmsetbg',
+    ('--tile "%s"', '--center "%s"', '--maxscale "%s"', '--scale "%s"'),
+    '-display %s'),
+('hsetroot',
+    ('-tile "%s"', '-center "%s"', '-full "%s"', '-fill "%s"'),
+    None),
+('chbg',
+    ('-mode tile "%s"', '-mode center "%s"', '-mode maximize "%s"', '-mode smart "%s"'),
+    None),
+('xsetbg',
+    ('-tile "%s"', '-center "%s"', '-fullscreen "%s"', '"%s"'),
+    '-display %d')
+]
+extsImage = ('.jpg', '.jpeg', '.png', '.tif', '.tiff', '.xpm', '.bmp')
+
+
+#===============================================================================
+# Utility functions and classes
+#===============================================================================
+
+# Holds the ratings by path and loads on demand.
+class Ratings(object):
+    def __init__(self):
+        self.d = None
+    def get(self, path):
+        if self.d is None:
+            self.d = cfgWallpaper.getSection('ratings')
+        return int(self.d.get(path, 0))
+    def set(self, path, rating):
+        self.d[path.lower()] = rating
+        cfgWallpaper.set('ratings', path, rating)
+ratings = Ratings()
+
+#---------------------------------------------------------------------
+def getSectionName(workspace, display):
+#---------------------------------------------------------------------
+    return 'workspace%d%s' % (workspace, display)
+
+#---------------------------------------------------------------------
+def getWallpapererCmd(image, treatment, display):
+#---------------------------------------------------------------------
+    for dir in os.environ['PATH'].split(':'):
+        for wallpaperer in wallpaperers:
+            prog = os.path.join(dir, wallpaperer[0])
+            if os.path.exists(prog):
+                cmd = prog
+                if display:
+                    if len(wallpaperer) >= 3 and wallpaperer[2]:
+                        cmd += ' '
+                        cmd += wallpaperer[2] % display
+                    else:
+                        cmd = 'DISPLAY=%s %s' % (display, cmd)
+                cmd += ' %s' % (wallpaperer[1][treatment] % image)
+                return cmd
+    raise WNDO.ExcWallpaper('No wallpaper setter found in path')
+
+#---------------------------------------------------------------------
+def setWallpaper(wRoot, path, treatment, section, randomize, display):
+#---------------------------------------------------------------------
+    if os.path.isdir(path):
+        dir = path
+        path = current = cfgWallpaper.get(section, 'actual')
+        if path is None or randomize:
+            CMDO.info('Choosing random wallpaper from "%s"' % dir)
+            files = []
+            choices = []
+            for file in os.listdir(dir):
+                if os.path.splitext(file)[1].lower() in extsImage:
+                    filePath = os.path.join(dir, file)
+                    # Add path n times for all ratings >= 0
+                    i = ratings.get(filePath)
+                    if i >= 0:
+                        iChoice = len(files)
+                        files.append(file)
+                        while i >= 0:
+                            choices.append(iChoice)
+                            i -= 1
+            if len(files) == 0:
+                raise WNDO.ExcWallpaper('No recognized images found in directory "%s".' % dir)
+            elif len(files) == 1:
+                path = os.path.join(dir, files[0])
+            else:
+                while path == current:
+                    path = os.path.join(dir, files[random.choice(choices)])
+    # Need to do something different under XFCE and Gnome
+    try:
+        pidXfdesktop = WNDO.Process().get('xfdesktop')
+        # Magic fault-tolerant DISPLAY parser results in an integer pair
+        if not display:
+            d1 = d2 = 0
+        else:
+            (d1, d2) = [int('0%s' % d) for d in (display.split(':')[-1].split('.') + ['0'])[:2]]
+        pathList = os.path.join(CMDO.program.home, 'backdrop_%d_%d' % (d1, d2))
+        try:
+            try:
+                f = open(pathList, 'w')
+                f.write('# xfce backdrop list\n%s\n' % path)
+            finally:
+                f.close()
+        except:
+            CMDO.error('Unable to create backdrop file "%s"' % pathList)
+        WNDO.run.killall(pidXfdesktop, sig = 'USR1')
+    except WNDO.ExcProcess:
+        if wRoot.NAUTILUS_DESKTOP_WINDOW_ID:
+            CMDO.info('Setting Nautilus wallpaper to "%s"' % path)
+            os.system('gconftool -s -t string /desktop/gnome/background/picture_filename "%s"'
+                            % path)
+        else:
+            cmd = getWallpapererCmd(path, treatment, display)
+            CMDO.info('Wallpaper command: %s' % cmd)
+            os.system(cmd)
+    return path
+
+#===============================================================================
+# Commands
+#===============================================================================
+
+#---------------------------------------------------------------------
+@CMDO.export(
+    CMDO.PathFile(dirOk=True, desc='image file or directory'),
+    treatment = WNDO.WallpaperTreatment,
+    display   = WNDO.Display,
+)
+def set(path, treatment = None, display = None):
+#---------------------------------------------------------------------
+    '''\
+Set wallpaper using an optional treatment.  Can specify either a single image
+file or a directory from which to choose a random image.  Saves settings for
+current workspace to configuration file for use by wallpaper_apply().'''
+    wRoot = WNDO.WMRootWindow.get()
+    section = getSectionName(wRoot.workspace, display)
+    actual = setWallpaper(wRoot, path, treatment, section, False, display)
+    cfgWallpaper.set(section, 'image', path)
+    cfgWallpaper.set(section, 'actual', actual)
+    cfgWallpaper.set(section, 'treatment', treatment)
+    cfgWallpaper.set('global', 'directory', os.path.split(path)[0])
+    cfgWallpaper.save()
+
+#---------------------------------------------------------------------
+@CMDO.export(
+    randomize = CMDO.Boolean(desc = 'select new random wallpaper', valueDef = False),
+    report    = CMDO.Boolean(desc = 'report change on-screen', valueDef = False),
+    display   = WNDO.Display,
+)
+def apply(randomize = None, report = None, display = None):
+#---------------------------------------------------------------------
+    '''\
+Apply saved wallpaper to current workspace.  When saved wallpaper image path is
+a directory chooses a random image from that directory.'''
+    wRoot = WNDO.WMRootWindow.get()
+    section = getSectionName(wRoot.workspace, display)
+    path = cfgWallpaper.get(section, 'image')
+    if path is None:
+        CMDO.info('No previously-saved image for workspace %d display %s'
+                        % (wRoot.workspace, display))
+        return
+    treatment = cfgWallpaper.getInteger(section, 'treatment', 0)
+    actual = setWallpaper(wRoot, path, treatment, section, randomize, display)
+    cfgWallpaper.set(section, 'actual', actual)
+    cfgWallpaper.save()
+    if report:
+        name = os.path.splitext(os.path.split(actual)[1])[0]
+        WNDO.osd.display(name, alignment = 2, color = 'cyan', duration = 2)
+
+#---------------------------------------------------------------------
+@CMDO.export
+def select():
+#---------------------------------------------------------------------
+    '''\
+If zenity is available brings up a dialog to pick a wallpaper image file.
+Starts from the last visited directory.'''
+    dialog = CMDO.findProgram('zenity')
+    if not dialog:
+        raise WNDO.ExcWallpaper('Zenity is required in order to choose a wallpaper image file.')
+    dir = cfgWallpaper.get('global', 'directory')
+    if not dir:
+        dir = os.getcwd()
+    image = os.popen('chdir "%s"; "%s" --title="Select Wallpaper" --file-selection'
+                            % (dir, dialog)).read().strip()
+    if not image:
+        return
+    WNDO.wallpaper.set(image, treatment = 'scale') #TODO: fix hard-coded treatment
+
+#---------------------------------------------------------------------
+@CMDO.export(CMDO.Integer(valueDef = 1))
+def rate(delta = None):
+#---------------------------------------------------------------------
+    '''\
+Increase or decrease the current wallpaper image's rating in order to influence
+how often it gets randomly selected.'''
+    wRoot = WNDO.WMRootWindow.get()
+    section = getSectionName(wRoot.workspace, display)
+    actual = cfgWallpaper.get(section, 'actual')
+    if actual:
+        rating = ratings.get(actual) + delta
+        ratings.set(actual, rating)
+        cfgWallpaper.save()
+        name = os.path.splitext(os.path.split(actual)[1])[0]
+        WNDO.osd.display('%+d %s' % (rating, name), alignment = 2, color = 'cyan', duration = 2)
+
+# vim: filetype=python

@@ -1,0 +1,149 @@
+#===============================================================================
+#===============================================================================
+# window management module for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os
+
+#===============================================================================
+# Commands
+#===============================================================================
+
+#---------------------------------------------------------------------
+@CMDO.export()
+def root():
+#---------------------------------------------------------------------
+    '''\
+Get root window for passing to window functions.  Note that many functions are
+inappropriate for the root window, e.g. move().'''
+    return WNDO.WMRootWindow.get()
+
+#---------------------------------------------------------------------
+@CMDO.export()
+def active():
+#---------------------------------------------------------------------
+    '''\
+Get active window for passing to window functions.  Normally unnecessary, given
+that window arguments default to the active window.'''
+    return WNDO.WMWindow.get()
+
+#---------------------------------------------------------------------
+@CMDO.export()
+def pick():
+#---------------------------------------------------------------------
+    '''\
+Get user-picked window for passing to window functions.  Normally unnecessary,
+given that window arguments set to "pick" perform the same function.'''
+    return WNDO.WMWindow.get('pick')
+
+#---------------------------------------------------------------------
+@CMDO.export(title = WNDO.Title, cls = WNDO.ClassName, ws = WNDO.Workspace, prc = WNDO.Process)
+def search(title = None, cls = None, ws = None, prc = None):
+#---------------------------------------------------------------------
+    '''\
+Return a list of matching window objects for given title, class name,
+workspace, and or process (id) criteria.  Title accepts regular expressions.
+Can use results in a for...in loop to call window-related functions.'''
+    wRoot = WNDO.WMRootWindow.get(withChildren = True)
+    return wRoot.search(title = title, cls = cls, ws = ws, pid = prc)
+
+#---------------------------------------------------------------------
+@CMDO.export(WNDO.Coordinate('x'), WNDO.Coordinate('y'), w = WNDO.Window(valueDef = 'active'))
+def move(x, y, w = None):
+#---------------------------------------------------------------------
+    '''\
+Move window to coordinates (x, y).  Limited to visible work area.  Defaults to
+active window.'''
+    rect = w.getMoveRect(x, y)
+    CMDO.info('Position window at (%d,%d)' % (rect.x, rect.y))
+    os.system('wndo-ctrl -r %s -e %d,%d,-1,-1' % (w.wid, rect.x, rect.y))
+
+#---------------------------------------------------------------------
+@CMDO.export(WNDO.Alignment, w = WNDO.Window(valueDef = 'active'))
+def align(alignment, w = None):
+#---------------------------------------------------------------------
+    '''!
+Align window to position # 1-9 (shown below) without resizing.  Left, center or
+right alignments apply to the left edge, center or right edge of the window.
+Top, middle or bottom alignments apply to the top edge, middle or bottom edge
+of the window.  Defaults to active window.
+"""
+1-----+--2--+-----3
+|     |     |     |
++-----+-----+-----+
+4     |  5  |     6
++-----+-----+-----+
+|     |     |     |
+7-----+--8--+-----9
+"""
+'''
+    rect = w.getAlignRect(alignment)
+    CMDO.info('Alignment position %d at (%d,%d)' % (alignment, rect.x, rect.y))
+    os.system('wndo-ctrl -r %s -e %d,%d,-1,-1' % (w.wid, rect.x, rect.y))
+
+#---------------------------------------------------------------------
+@CMDO.export(WNDO.TileFrom, WNDO.TileTo, w = WNDO.Window(valueDef = 'active'))
+def tile(tile1, tile2, w = None):
+#---------------------------------------------------------------------
+    '''!
+Resize and move window to fill rectangle enclosed by two tile # arguments.
+Asymmetrical tiling grid (shown below) has larger left column and top row.
+Defaults to active window.
+"""
++---------+-----+
+|         |     |
+|    1    |  2  |
+|         |     |
++---------+-----+
+|    3    |  4  |
++---------+-----+
+"""
+'''
+    if tile2 < 0:
+        tile2 = tile1
+    rect = w.getOuterTileRect(tile1, tile2)
+    CMDO.info('Tile position (%d-%d) at %s' % (tile1, tile2, rect))
+    os.system('wndo-ctrl -r %s -e %d,%d,%d,%d' % (w.wid, rect.x, rect.y, rect.w, rect.h))
+
+#---------------------------------------------------------------------
+@CMDO.export(w = WNDO.Window(valueDef = 'active'))
+def show(w = None):
+#---------------------------------------------------------------------
+    '''Display window position and size properties.  Defaults to active
+    window.'''
+    CMDO.info('''\
+               Id: %s
+       Outer Rect: %s
+       Inner Rect: %s
+           Border: %d
+        Parent Id: %s
+Parent Outer Rect: %s
+Parent Inner Rect: %s
+    Parent Border: %d''' % (
+    w.wid,
+    w.rectOuter,
+    w.rectInner,
+    w.borderSize,
+    w.wParent.wid,
+    w.wParent.rectOuter,
+    w.wParent.rectInner,
+    w.wParent.borderSize))
+
+# vim: filetype=python

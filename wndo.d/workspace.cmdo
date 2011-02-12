@@ -1,0 +1,70 @@
+#===============================================================================
+#===============================================================================
+# workspace management module for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os
+
+#===============================================================================
+# Commands
+#===============================================================================
+
+#---------------------------------------------------------------------
+@CMDO.export(WNDO.Workspace, w = WNDO.Window(valueDef = 'active'))
+def send(ws, w = None):
+#---------------------------------------------------------------------
+    '''Send window to another workspace # or name, but stay on the current
+    workspace.  Specify "next" or "previous" to send to the next or previous
+    workspace.  Defaults to active window.'''
+    CMDO.info('Send window to workspace #%d' % ws)
+    os.system('wndo-ctrl -r %s -t %d' % (w.wid, ws-1))
+
+#---------------------------------------------------------------------
+@CMDO.export(WNDO.Workspace, w = WNDO.Window(valueDef = 'active'))
+def bring(ws, w = None):
+#---------------------------------------------------------------------
+    '''Bring window to another workspace # and switch to that workspace.
+    Specify "next" or "previous" to bring to the next or previous workspace.
+    Defaults to active window.'''
+    send(ws, w = w)
+    switch(ws)
+
+#---------------------------------------------------------------------
+@CMDO.export(WNDO.Workspace)
+def switch(ws):
+#---------------------------------------------------------------------
+    '''Switch to another workspace #.  Pass "next" or previous" to switch to
+    the next or previous workspace.'''
+    os.system('wndo-ctrl -s %d' % (ws-1))
+
+#---------------------------------------------------------------------
+@CMDO.export
+def report():
+#---------------------------------------------------------------------
+    '''Report current workspace using on-screen display (OSD).  Requires
+    "osd_cat" in the path.'''
+    wRoot = WNDO.WMRootWindow.get()
+    if wRoot.workspace <= 0 or wRoot.workspace > len(wRoot.workspaceNames):
+        name = 'Workspace %d' % wRoot.workspace
+    else:
+        name = 'Workspace: %s' % wRoot.workspaceNames[wRoot.workspace-1]
+    WNDO.osd.display(name)
+
+# vim: filetype=python

@@ -1,0 +1,550 @@
+#===============================================================================
+#===============================================================================
+# setup module for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os, os.path
+import re
+import shutil
+import glob
+
+# Replaceable block delimiters
+reMarkBegin = re.compile('^#[ \t#]*%s:[ \t]*begin[ \t#]*$' % CMDO.program.name, re.IGNORECASE)
+reMarkEnd   = re.compile('^#[ \t#]*%s:[ \t]*end[ \t#]*$'   % CMDO.program.name, re.IGNORECASE)
+markBegin = '### %s: begin ###' % CMDO.program.name
+markEnd   = '### %s: end ###' % CMDO.program.name
+
+# No features are ignored for now
+featuresSupported = WNDO.Features.getSet(['all'])
+
+
+#===============================================================================
+
+# Use the @document decorator rather than the Python doc string to build the
+# string dynamically.
+@CMDO.document(
+'''
+Checks prerequisites and sets up events.  The features argument indicates which
+event bindings to create.  Pre-existing bindings for unwanted features are not
+removed.
+
+|!Feature|Description|
+%s
+''' % ('\n'.join(['|%s|%s|' % (f.name, f.desc) for f in featuresSupported.iterSet()]))
+)
+@CMDO.export(
+    features  = WNDO.FeatureList(valueDef = 'all'),
+    interval  = WNDO.Heartbeat(desc = 'random wallpaper changing interval', valueDef = 20),
+    autostart = CMDO.Boolean(desc = 'add to autostart programs', valueDef = True),
+    key       = CMDO.String(desc = 'prefix key string or "direct" for direct keystrokes',
+                            valueDef = 'direct'),
+)
+def activate(features = None, interval = None, autostart = None, key = None):
+    '''Activate user features by surgically updating configuration.'''
+    WNDO.core.checkInstall()
+    confirmActivation(features, interval, autostart, key)
+    performActivation(features, interval, autostart, key)
+    CMDO.block(None, '', '*',
+               'Activation complete.',
+               'Restart window manager to complete changes.',
+               'Accessing settings before restarting can undo some changes.')
+
+
+#===============================================================================
+
+@CMDO.export
+def deactivate():
+    '''Deactivate user features.'''
+    confirmDeactivation()
+    performDeactivation()
+    CMDO.block(None, '', '*',
+               'Deactivation complete.',
+               'Restart window manager to complete changes.',
+               'Accessing settings before restarting can undo some changes.')
+
+
+#===============================================================================
+
+@CMDO.export
+def reactivate():
+    '''Reactive previously-selected user features.'''
+    confirmReactivation()
+    performReactivation()
+    CMDO.block(None, '', '*',
+               'Reactivation complete.',
+               'Restart window manager to complete changes.')
+
+
+#===============================================================================
+
+@CMDO.export
+def clean():
+    '''Thoroughly clean all user configuration.'''
+    confirmCleanup()
+    performCleanup()
+    CMDO.block(None, '', '*', 'Cleanup complete.')
+
+
+#===============================================================================
+
+def confirmActivation(features, interval, autostart, keyMain):
+    text = []
+    text.append('!Selected features')
+    width = 0
+    for feature in features.iterSet():
+        width = max(width, len(feature.name))
+    text.append('|!Feature|Description|')
+    format = '|%%-%ds|%%s|' % width
+    for feature in features.iterSet():
+        text.append(format % (feature.name, feature.desc))
+    text.append('!Keys (main key "%s")' % keyMain)
+    for bindingSet in features.iterBindingSets():
+        for binding in bindingSet.bindings:
+            if not keyMain or keyMain.lower() == 'direct':
+                skey = '+'.join(bindingSet.mods + binding.keys)
+            else:
+                skey = '+'.join(binding.keys)
+            text.append('|%s|%s|' % (binding.desc, WNDO.core.normalizeKey(skey)))
+    if features.has('wallpaper'):
+        text.append('!Wndo-spy events')
+        text.append('|!Event   |Action|')
+        text.append('|workspace:switch|Refresh wallpaper for current workspace|')
+        if interval:
+            text.append('|timer:%d|Randomize wallpaper every %d minutes|' % (interval, interval))
+    text.append('!Notes')
+    text.append('# Conflicting bindings will be overwritten.')
+    text.append('# Existing non-conflicting bindings will be ignored.')
+    text.append('# Mod4 and Super map to the Windows key on many keyboards.')
+    if not interval:
+        text.append('# No wallpaper randomization interval was specified.'
+                    ' Use "interval=<minutes>" if one is desired.'
+                    ' See "help setup.install" for more information.')
+    if autostart:
+        text.append('# Wndo-spy will be added as an autostart program.')
+    CMDO.core.help(heading = 'Activation Confirmation', text = '\n'.join(text))
+    if not CMDO.confirm():
+        CMDO.abort()
+    CMDO.info('---')
+
+
+#===============================================================================
+
+def performActivation(features, interval, autostart, keyMain):
+
+    # Cleanup from old installations
+    updateOld()
+
+    # Autostart wndo-spy?
+    if autostart:
+        enableAutostart()
+
+    # Wallpaper events?
+    if features.has('wallpaper'):
+        enableWallpaper(interval)
+
+    # The main key prefix.
+    if keyMain:
+        enableKeys(features, keyMain)
+
+
+#===============================================================================
+
+def confirmDeactivation():
+    text = []
+    text.append('About to deactivate all user features.')
+    text.append('!Notes')
+    text.append('# Settings will not be scrubbed. Use setup.clean for that.')
+    text.append('# Full package uninstallation must be done by an administrator.')
+    CMDO.core.help(heading = 'Deactivation Confirmation', text = '\n'.join(text))
+    if not CMDO.confirm():
+        CMDO.abort()
+    CMDO.info('---')
+
+
+#===============================================================================
+
+def performDeactivation():
+    killProcesses()
+    disableAutostart()
+    clearOld()
+
+
+#===============================================================================
+
+def confirmReactivation():
+    text = []
+    text.append('About to reactivate all previously-enabled user features.')
+    CMDO.core.help(heading = 'Reactivation Confirmation', text = '\n'.join(text))
+    if not CMDO.confirm():
+        CMDO.abort()
+    CMDO.info('---')
+
+
+#===============================================================================
+
+def performReactivation():
+    enableAutostart()
+
+
+#===============================================================================
+
+def confirmCleanup():
+    text = []
+    text.append('About to deactivate all user features and delete related files.')
+    CMDO.core.help(heading = 'Cleanup Confirmation', text = '\n'.join(text))
+    if not CMDO.confirm():
+        CMDO.abort()
+    CMDO.info('---')
+
+
+#===============================================================================
+
+def performCleanup():
+    killProcesses()
+    disableAutostart()
+    restoreWallpaper()
+    deleteConfiguration()
+    clearOld()
+
+
+#===============================================================================
+
+def enableAutostart():
+    # Update ~/.fluxbox/startup, as needed.
+    enableFluxboxAutostart()
+    # Create ~/.config/autostart/wndo-spy.desktop, as needed.
+    enableXDGAutostart()
+
+
+#===============================================================================
+
+def enableFluxboxAutostart():
+    updateFluxboxAutostart(True)
+
+
+#===============================================================================
+
+def enableXDGAutostart():
+    dir  = os.path.expanduser('~/.config/autostart')
+    path = os.path.join(dir, 'wndo-spy.desktop')
+    if not os.path.exists(dir):
+        CMDO.info('Creating "%s" directory...' % dir)
+        os.makedirs(dir)
+    CMDO.info('Writing "%s"...' % path)
+    f = open(path, 'w')
+    f.write('''\
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=Wndo-spy
+Comment=Wndo-spy event generator
+Exec=wndo-spy
+StartupNotify=false
+Terminal=false
+Hidden=false
+''')
+    f.close()
+
+
+#===============================================================================
+
+def enableWallpaper(interval):
+    # Add workspace wallpaper event (as needed).
+    if WNDO.events.find(event = 'workspace', action = 'wallpaper[.]apply.*'):
+        CMDO.info('Not overwriting existing workspace wallpaper event')
+    else:
+        WNDO.events.add('workspace:switch', 'wallpaper.apply')
+    # Delete existing wallpaper timer(s).
+    if WNDO.events.purge(event = 'timer:?[0-9]+', action = 'wallpaper[.]apply.*'):
+        CMDO.info('Replaced previous wallpaper timer')
+    # Add wallpaper interval timer (as needed).
+    if interval:
+        CMDO.info('Adding %d minute wallpaper timer...' % interval)
+        WNDO.events.add('timer:%d' % interval, 'wallpaper.apply randomize=True')
+    # Update Xfce desktop configuration to use Wndo-selected images (as needed).
+    enableXfceWallpaper()
+
+
+#===============================================================================
+
+def enableXfceWallpaper():
+    pathDesktopConfig = os.path.expanduser('~/.config/xfce4/mcs_settings/desktop.xml')
+    if not os.path.exists(pathDesktopConfig):
+        return
+    CMDO.info('Updating Xfce "%s" for wallpaper changing...' % pathDesktopConfig)
+    # Substitute our backdrops lists to allow dynamic wallpaper changing
+    cfgXfce = WNDO.XMLConfig(path = pathDesktopConfig)
+    cfgWndo = CMDO.config('wallpaper', caseSensitive = True)
+    for node in cfgXfce.root.find('option'):
+        if node.attr.name[:10] == 'imagepath_':
+            # If the first line read is a valid path it must be a backdrop list
+            pathImage = node.attr.value
+            try:
+                try:
+                    f = open(pathImage)
+                    s = f.readline().strip()
+                    while not s or s[:1] == '#':
+                        s = f.readline().strip()
+                    if os.path.exists(s):
+                        pathImage = s
+                finally:
+                    f.close()
+            except:
+                pass
+            suffix = node.attr.name[10:]
+            pathList = os.path.join(CMDO.program.home, 'backdrop_%s' % suffix)
+            section = 'workspace1:%s' % suffix.replace('_', '.')
+            cfgWndo.set(section, 'image', pathImage)
+            cfgWndo.set(section, 'actual', pathImage)
+            cfgWndo.set(section, 'treatment', 0)
+            node.attr.value = pathList
+            CMDO.info('Creating "%s" with initial image "%s"...' % (pathList, pathImage))
+            try:
+                try:
+                    f = open(pathList, 'w')
+                    f.write('# xfce backdrop list\n%s\n' % pathImage)
+                finally:
+                    f.close()
+            except:
+                CMDO.error('Unable to create backdrop file "%s"' % pathList)
+    cfgXfce.save()
+    cfgWndo.save()
+
+
+#===============================================================================
+
+def enableKeys(features, keyMain):
+    if keyMain.lower() == 'direct':
+        keyMain = None
+    if keyMain:
+        keyMain = WNDO.core.normalizeKey(keyMain)
+        if WNDO.events.purge(action = 'events.mainkey'):
+            CMDO.info('Purged previous main key event')
+        CMDO.info('Adding main key event "%s"...' % keyMain)
+        WNDO.events.add('key:%s' % keyMain, 'events.mainkey')
+    for bindingSet in features.iterBindingSets():
+        if bindingSet.purge:
+            if WNDO.events.purge(event = 'mainkey:.*', action = bindingSet.purge):
+                CMDO.info('Purged previous "%s" events' % bindingSet.purge)
+        CMDO.info('Adding "%s" events' % bindingSet.desc)
+        for binding in bindingSet.bindings:
+            if not keyMain:
+                event = 'key:%s' % WNDO.core.normalizeKey('+'.join(bindingSet.mods + binding.keys))
+                if WNDO.events.purge(event = event.replace('+', '\\+')):
+                    CMDO.info('Purged previous "%s" events' % event)
+            else:
+                event = 'mainkey:%s' % '+'.join(binding.keys)
+            for cmd in binding.cmds:
+                WNDO.events.add(event, cmd)
+
+
+#===============================================================================
+
+def killProcesses():
+    CMDO.info('Killing wndo-spy...')
+    try:
+        WNDO.run.killall('wndo-spy')
+    except:
+        CMDO.info('(wndo-spy not running)')
+
+
+#===============================================================================
+
+def disableAutostart():
+    disableFluxboxAutostart()
+    disableXDGAutostart()
+
+
+#===============================================================================
+
+def disableFluxboxAutostart():
+    updateFluxboxAutostart(False)
+
+
+#===============================================================================
+
+def disableXDGAutostart():
+    path = os.path.expanduser('~/.config/autostart/wndo-spy.desktop')
+    if os.path.exists(path):
+        CMDO.info('Deleting "%s"...' % path)
+        os.remove(path)
+
+
+#===============================================================================
+
+def restoreWallpaper():
+    restoreXfceWallpaper()
+
+
+#===============================================================================
+
+def restoreXfceWallpaper():
+    pathDesktopConfig = os.path.expanduser('~/.config/xfce4/mcs_settings/desktop.xml')
+    if not os.path.exists(pathDesktopConfig):
+        return
+    cfg = WNDO.XMLConfig(path = pathDesktopConfig)
+    if not cfg.root:
+        return
+    CMDO.info('Restoring Xfce "%s" wallpaper...' % pathDesktopConfig)
+    base = '%s/backdrop_' % CMDO.program.home
+    for path in glob.glob('%s*' % base):
+        name = 'imagepath_%s' % path[len(base):]
+        node = cfg.root.findFirst('option', name = name)
+        pathImage = ''
+        try:
+            try:
+                f = open(path)
+                s = f.readline().strip()
+                while not s or s[:1] == '#':
+                    s = f.readline().strip()
+                pathImage = s
+            finally:
+                f.close()
+        except:
+            pass
+        if node:
+            CMDO.info('Setting %s="%s"...' % (name, pathImage))
+            node.attr.value = pathImage
+        else:
+            CMDO.info('Adding %s="%s"...' % (name, pathImage))
+            node = cfg.root.add('option', name = name, type = 'string', value = pathImage)
+    cfg.save()
+
+
+#===============================================================================
+
+def deleteConfiguration():
+    CMDO.info('Deleting configuration files...')
+    shutil.rmtree(CMDO.program.home, ignore_errors = True)
+
+
+#===============================================================================
+
+def updateFluxboxAutostart(install):
+    pathStartup = os.path.join(os.path.expanduser('~/.fluxbox'), 'startup')
+    if not os.path.exists(pathStartup):
+        return
+    if install:
+        CMDO.info('Updating Fluxbox startup script "%s"' % pathStartup)
+    try:
+        pathStartupSave = '%s~' % pathStartup
+        pathStartupTmp  = '%s!' % pathStartup
+        fIn  = open(pathStartup)
+        fOut = open(pathStartupTmp, 'w')
+        inBlock = False
+        found   = False
+        written = False
+        if install:
+            sBlock  = '%s\n' % markBegin
+            sBlock += 'wndo-spy &\n'
+            sBlock += '%s\n' % markEnd
+        else:
+            sBlock = ''
+        for line in fIn:
+            s = line.strip()
+            if inBlock:
+                if reMarkEnd.match(s):
+                    inBlock = False
+            else:
+                if reMarkBegin.match(s):
+                    inBlock = True
+                    found   = True
+                    CMDO.info('Replacing existing %s block in "%s"...'
+                                    % (CMDO.program.name, pathStartup))
+                    if install:
+                        fOut.write(sBlock)
+                    written = True
+                else:
+                    if s and s.split()[0] == 'exec':
+                        if not written:
+                            if install:
+                                CMDO.info('Writing new %s block in "%s"...'
+                                                % (CMDO.program.name, pathStartup))
+                                fOut.write('%s\n' % sBlock)
+                            written = True
+                    fOut.write(line)
+        fIn.close()
+        fOut.close()
+        if inBlock:
+            CMDO.warning('Unterminated %s block in "%s".' % (CMDO.program.name, pathStartup))
+        if written and (found or install):
+            CMDO.info('Writing changes to "%s" and saving backup...' % pathStartup)
+            if install:
+                CMDO.info('Edit "%s" to customize the bindings.' % pathStartup)
+            shutil.copy(pathStartup   , pathStartupSave)
+            shutil.move(pathStartupTmp, pathStartup    )
+        else:
+            if install:
+                CMDO.warning('Insertion point not found in "%s"' % pathStartup)
+    except Exception, e:
+        CMDO.warning('Unable to update "%s"\n%s' % (pathStartup, str(e)))
+
+
+#===============================================================================
+
+def updateOld():
+    removeObsoleteFluxboxKeysBlock()
+
+
+#===============================================================================
+
+def clearOld():
+    removeObsoleteFluxboxKeysBlock()
+
+
+#===============================================================================
+
+def removeObsoleteFluxboxKeysBlock():
+    pathKeys = os.path.expanduser('~/.fluxbox/keys')
+    if not os.path.isfile(pathKeys):
+        return
+    pathKeysSave = '%s~' % pathKeys
+    pathKeysTmp  = '%s!' % pathKeys
+    try:
+        try:
+            fIn  = open(pathKeys)
+            try:
+                fOut = open(pathKeysTmp, 'w')
+                inBlock = False
+                for line in fIn:
+                    s = line.strip()
+                    if inBlock:
+                        if reMarkEnd.match(s):
+                            inBlock = False
+                    else:
+                        if reMarkBegin.match(s):
+                            inBlock = True
+                            CMDO.info('Replacing existing %s key bindings block in "%s"...'
+                                    % (CMDO.program.name, pathKeys))
+                        else:
+                            fOut.write(line)
+            finally:
+                fOut.close()
+        finally:
+            fIn.close()
+        if inBlock:
+            CMDO.warning('Original %s key bindings block was unterminated.' % CMDO.program.name)
+        CMDO.info('Writing changes and saving backup to "%s"...' % pathKeysSave)
+        shutil.copy(pathKeys   , pathKeysSave)
+        shutil.move(pathKeysTmp, pathKeys    )
+    except Exception, e:
+        CMDO.warning('Unable to update "%s"\n%s' % (pathKeys, str(e)))
+
+# vim: filetype=python

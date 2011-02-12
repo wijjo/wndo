@@ -1,0 +1,284 @@
+#!/usr/bin/env python
+#===============================================================================
+#===============================================================================
+# Script to start a new version number.
+#
+# Updates all appropriate files, including changelogs (normal and Debian), the
+# main wndo script, and configure.ac.
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os, os.path
+import sys
+import re
+import shutil
+import time
+import string
+import ConfigParser
+
+
+#===============================================================================
+
+def abort(msg = None, e = None):
+    if msg:
+        sys.stderr.write('ERROR: %s\n' % msg)
+    if e:
+        sys.stderr.write('  Exception: %s\n' % str(e))
+    if not msg and not e:
+        sys.stderr.write('Abort\n')
+    sys.exit(1)
+
+
+#===============================================================================
+
+class FileFixer(object):
+
+    def __init__(self, path, vinfo):
+        self.path   = path
+        self.vinfo  = vinfo
+        self.func   = self.check
+        self.backup = '%s~' % self.path
+        self.tmp    = '%s!' % self.path
+        self.done   = False
+        if not os.path.isfile(self.path):
+            abort('File "%s" not found' % self.path)
+
+    def fix(self):
+        print 'Fixing "%s"...' % self.path
+        try:
+            fOut = open(self.tmp, 'w')
+            fIn = open(self.path)
+            for line in fIn:
+                if not self.done:
+                    for s in self.func(line.rstrip()):
+                        fOut.write('%s\n' % s)
+                else:
+                    fOut.write(line)
+        except Exception, e:
+            abort('Read/write failure in "%s"' % self.path, e)
+        finally:
+            fIn.close()
+            fOut.close()
+        if not self.done:
+            abort('Failed to fix "%s"' % self.path)
+
+    def finalize(self):
+        print 'Finalizing changes to "%s"...' % self.path
+        try:
+            shutil.copyfile(self.path, self.backup)
+            shutil.move(self.tmp, self.path)
+        except Exception, e:
+            abort('Failed to finalize changes to "%s"' % self.path, e)
+
+
+#===============================================================================
+
+class ChangeLogFixer(FileFixer):
+
+    reVersion = re.compile('[ \t]*([0-9.]+)[ \t]*-[ \t]*([0-9-]+.*)')
+
+    def check(self, line):
+        m = ChangeLogFixer.reVersion.match(line)
+        if m is not None:
+            heading = '%s - %s' % (self.vinfo.version, self.vinfo.datetime)
+            yield heading
+            yield '-' * len(heading)
+            for change in self.vinfo.changes:
+                yield '\t* %s' % change
+            yield ''
+            self.done = True
+        yield line
+
+
+#===============================================================================
+
+class DebianChangeLogFixer(FileFixer):
+
+    def check(self, line):
+        yield '%s (%s) %s; urgency=%s' % (
+                self.vinfo.program, self.vinfo.version, self.vinfo.ubuntu, self.vinfo.urgency)
+        yield ''
+        for change in self.vinfo.changes:
+            yield '  * %s' % change
+        yield ''
+        yield ' -- %s <%s>  %s' % (self.vinfo.name, self.vinfo.email, self.vinfo.timestamp)
+        yield ''
+        yield line
+        self.done = True
+
+
+#===============================================================================
+
+class MainScriptFixer(FileFixer):
+
+    reMain = re.compile('^([ \t]*[a-z][a-z0-9_]*[.]main[(])[^)]*([)])[ \t]*$', re.IGNORECASE)
+
+    def check(self, line):
+        m = MainScriptFixer.reMain.match(line)
+        if m is not None:
+            yield "%s'%s'%s" % (m.group(1), self.vinfo.version, m.group(2))
+            self.done = True
+        else:
+            yield line
+
+
+#===============================================================================
+
+class ConfigurationFixer(FileFixer):
+
+    reInit = re.compile('^[ \t]*AC_INIT[ \t]*[(].*$')
+
+    def check(self, line):
+        m = ConfigurationFixer.reInit.match(line)
+        if m is not None:
+            yield 'AC_INIT(%s,[%s], [%s],%s)' % (
+                    vinfo.program, vinfo.version, vinfo.url, vinfo.program)
+            self.done = True
+        else:
+            yield line
+
+
+#===============================================================================
+
+class VersionInfo(object):
+
+    def __init__(self, path, program):
+        self.path      = path
+        self.program   = program
+        self.timestamp = time.strftime('%a, %d %b %Y %H:%M:%S %z')
+        self.datetime  = time.strftime('%Y-%m-%d %H:%M:%S %z')
+        if not os.path.exists(self.path):
+            try:
+                f = open(self.path, 'w')
+                f.write('''\
+[info]
+version = (version)
+ubuntu  = (ubuntu release)
+urgency = (e.g. low)
+name    = (your name)
+email   = (your email)
+url     = (project url)
+
+[changes]
+1 =
+2 =
+3 =
+4 =
+5 =
+6 =
+7 =
+8 =
+9 =
+''')
+            except Exception, e:
+                abort('Failed to create %s - please create it manually.' % self.path, e)
+            finally:
+                f.close()
+        editor = None
+        if 'EDITOR' in os.environ:
+            editor = os.environ['EDITOR']
+        if editor is None:
+            for dir in os.environ['PATH'].split(':'):
+                for chk in ['nano', 'vi']:
+                    if os.path.exists(os.path.join(dir, chk)):
+                        editor = chk
+                        break
+                if editor is not None:
+                    break
+        if editor is None:
+            abort('Failed to find preferred editor - please edit %s manually.' % self.path)
+        os.system('%s %s' % (editor, self.path))
+
+    def load(self):
+        try:
+            parser = ConfigParser.ConfigParser()
+            parser.read(self.path)
+            self.version = parser.get('info', 'version')
+            self.ubuntu  = parser.get('info', 'ubuntu')
+            self.urgency = parser.get('info', 'urgency')
+            self.name    = parser.get('info', 'name')
+            self.email   = parser.get('info', 'email')
+            self.url     = parser.get('info', 'url')
+            self.changes = [item[1] for item in parser.items('changes') if item[1]]
+        except Exception, e:
+            abort('Failed to read configuration file %s' % self.path, e)
+        print '''
+version: %s
+ ubuntu: %s
+urgency: %s
+   name: %s
+  email: %s
+    url: %s
+
+changes:
+%s
+''' % (self.version,
+       self.ubuntu,
+       self.urgency,
+       self.name,
+       self.email,
+       self.url,
+       '\n'.join(['  * %s' % change for change in self.changes]))
+
+
+#===============================================================================
+
+def pause(msg):
+    sys.stdout.write('\n%s (Enter to continue or Ctrl-C to abort) ' % msg)
+    try:
+        sys.stdin.readline()
+    except:
+        sys.stderr.write('\n')
+        abort()
+
+#===============================================================================
+
+if __name__ == '__main__':
+
+    vinfo = VersionInfo('version.info', 'wndo')
+
+    print '''
+Each run will add to ChangeLog and debian/changelog.
+Remember to edit those files if extra entries are inserted.
+'''
+
+    pause('Editing "%s"...' % vinfo.path)
+    vinfo.load()
+
+    pause('Apply changes?')
+
+    fixers = [
+        ChangeLogFixer(      'ChangeLog',              vinfo),
+        DebianChangeLogFixer('debian/changelog',       vinfo),
+        MainScriptFixer(     'bin/%s' % vinfo.program, vinfo),
+        ConfigurationFixer(  'configure.ac',           vinfo),
+    ]
+
+    for fixer in fixers:
+        fixer.fix()
+
+    pause('Finalize changes?')
+    for fixer in fixers:
+        fixer.finalize()
+
+    print '''
+Changes complete!
+
+Remember to re-configure.
+'''

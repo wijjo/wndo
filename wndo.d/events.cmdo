@@ -1,0 +1,174 @@
+#===============================================================================
+#===============================================================================
+# event handling module for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os
+
+
+#===============================================================================
+
+@CMDO.export(WNDO.Event)
+def handle(event):
+    '''Handle a named event by looking up and invoking assigned action(s).'''
+    cfg = CMDO.config('events')
+    CMDO.info('EVENT: "%s"' % event)
+    i = 0
+    for (tag, action) in cfg.getSectionSorted(event):
+        i += 1
+        if action:
+            CMDO.info('   %d: %s' % (i, action))
+            CMDO.execute(action)
+
+
+#===============================================================================
+
+@CMDO.export(WNDO.EventPattern)
+def show(eventPat):
+    '''List actions for event pattern.'''
+    cfg = CMDO.config('events')
+    for event in cfg.getSectionNames():
+        if eventPat.match(event):
+            CMDO.info('')
+            CMDO.info('EVENT: "%s"' % event)
+            actions = [action for (tag, action) in cfg.getSectionSorted(event)]
+            if actions:
+                i = 0
+                for action in actions:
+                    i += 1
+                    CMDO.info('   %d: %s' % (i, action))
+            else:
+                CMDO.info('   (no actions)')
+    CMDO.info('')
+
+
+#===============================================================================
+
+@CMDO.export(WNDO.Event, WNDO.Action)
+def add(event, action):
+    '''Add command binding to named event.'''
+    cfg = CMDO.config('events')
+    i = 0
+    tagactions = []
+    for (t, a) in cfg.getSectionSorted(event):
+        i += 1
+        tagactions.append(('action%d' % i, a))
+    tagactions.append(('action%d' % (i+1), action))
+    cfg.removeSection(event)
+    for tagaction in tagactions:
+        cfg.set(event, tagaction[0], tagaction[1])
+    cfg.save()
+
+
+#===============================================================================
+
+@CMDO.export(event = WNDO.EventPattern, action = WNDO.ActionPattern)
+def find(event = None, action = None):
+    '''Find event/index/action triplets matching event and or action patterns.'''
+    cfg = CMDO.config('events')
+    triplets = []
+    for sEvent in cfg.getSectionNames():
+        if event.match(sEvent):
+            i = 0
+            for (tag, sAction) in cfg.getSectionSorted(sEvent):
+                i += 1
+                if action.match(sAction):
+                    triplets.append((i, sEvent, sAction))
+    return triplets
+
+
+#===============================================================================
+
+@CMDO.export(WNDO.Event, CMDO.More(WNDO.ActionIndex))
+def delete(event, *idx):
+    '''Delete specific event action(s).'''
+    cfg = CMDO.config('events')
+    actionsIn  = [action for (tag, action) in cfg.getSectionSorted(event)]
+    actionsOut = [actionsIn[i] for i in range(len(actionsIn)) if i+1 not in idx]
+    idxBad     = [i for i in idx if i < 1 or i > len(actionsIn)]
+    if len(idxBad) == 1:
+        CMDO.warning('Bad index %d' % idxBad[0])
+    elif len(idxBad) > 1:
+        s1 = ', '.join([str(i) for i in idxBad[:-1]])
+        CMDO.warning('Bad indices %s and %d' % (s1, idxBad[-1]))
+    cfg.removeSection(event)
+    i = 0
+    for action in actionsOut:
+        if i != idx:
+            i += 1
+            cfg.set(event, 'action%d' % i, action)
+    cfg.save()
+
+
+#===============================================================================
+
+@CMDO.export(event = WNDO.EventPattern, action = WNDO.ActionPattern)
+def purge(event = None, action = None):
+
+    '''Find and purge by event/action pattern(s).  Patterns support full
+    regular expression syntax.  Return dictionary mapping event names to lists
+    of objects with "idx" and "action" members.'''
+
+    class IndexedAction(object):
+        def __init__(self, idx, action):
+            self.idx    = idx
+            self.action = action
+
+    # Find matching events, indices and actions.
+    toDelete = {}
+    for (idx, nameEvent, nameAction) in WNDO.events.find(event  = event, action = action):
+        toDelete.setdefault(nameEvent, []).append(IndexedAction(idx, nameAction))
+
+    # Delete what we found in each affected event.
+    for nameEvent in toDelete:
+        idxlist = [td.idx for td in toDelete[nameEvent]]
+        WNDO.events.delete(nameEvent, *idxlist)
+
+    # Let the caller know what we did.
+    return toDelete
+
+
+#===============================================================================
+
+@CMDO.export(WNDO.Event)
+def clear(event):
+    '''Clear all event actions.'''
+    cfg = CMDO.config('events')
+    cfg.removeSection(event)
+    cfg.save()
+
+
+#===============================================================================
+
+@CMDO.export
+def mainkey():
+    key = ''
+    try:
+        f = os.popen('wndo-pick -k')
+        for line in f:
+            if line[:7] != 'wndo-pick:':
+                key = line.strip()
+                break
+    finally:
+        f.close()
+    if key:
+        handle('mainkey:%s' % key)
+
+# vim: filetype=python

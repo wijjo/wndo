@@ -1,0 +1,1634 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+<title>Wndo help reference</title>
+
+<style type="text/css">
+* {
+    font-size: 12pt;
+}
+
+.h1bar {
+    background-color: #aaaaff;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding: 4px;
+    width: 100%;
+    height: auto;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.h1barheading {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 4px;
+}
+
+.h1bartopcell {
+    text-align: right;
+}
+
+.h1bartoplink {
+    font-size: 11pt;
+    text-indent: 1em;
+    padding: 2px;
+}
+
+.h2bar {
+    background-color: #e8e8ff;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding: 2px;
+    width: 100%;
+    height: auto;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.h2barheading {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 2px;
+}
+
+.h2bartopcell {
+    text-align: right;
+}
+
+.h2bartoplink {
+    font-size: 11pt;
+    text-indent: 1em;
+    padding: 2px;
+}
+
+.heading1 {
+    background-color: #aaaaff;
+    font-size: 16pt;
+    font-weight: bold;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 4px;
+}
+
+.heading2 {
+    background-color: #e8e8ff;
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 2px;
+}
+
+.heading3 {
+    border-bottom: 1px solid gray;
+    width: auto;
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.heading4 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.heading5 {
+    font-size: 12pt;
+    font-weight: italic;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.heading6 {
+    font-size: 11pt;
+    font-weight: italic;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.gentable {
+    border: 1px solid gray;
+    margin-bottom: 8px;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.genheader {
+    border: 1px solid gray;
+    background-color: #F2F2FF;
+    padding: 2px 4px;
+}
+
+.genrow {
+}
+
+.gencell {
+    border: 1px solid gray;
+    padding: 2px 4px;
+}
+
+ol {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: -8px;
+    margin-right: 0px;
+}
+
+ol li {
+    list-style-type: decimal;
+}
+
+ul li {
+}
+
+p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+pre {
+    background-color: #eeeeee;
+    font-size: 10pt;
+}
+
+.tocblock {
+    border: 1px solid gray;
+    background-color: #eeeeff;
+    padding: 10px;
+    margin: 20px;
+}
+
+.toc0 {
+}
+
+.toc1 {
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+.toc2 {
+    padding-left: 16px;
+}
+
+.toc3 {
+    padding-left: 32px;
+}
+
+.toc4 {
+    padding-left: 48px;
+}
+
+.block {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+</style>
+
+<style type="text/css" media="print">
+.h1bartoplink {
+    display: none;
+}
+
+.h2bartoplink {
+    display: none;
+}
+
+.tocblock {
+    display: none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 class="heading1">Wndo help reference</h1>
+<div class="block">
+  <div id="toc" class="tocblock">
+    <div class="toc1"><a href=#tocitem1>Function: checkInstall()</a></div>
+    <div class="toc1"><a href=#tocitem2>Function: normalizeKey(s)</a></div>
+    <div class="toc1"><a href=#tocitem3>Module: events</a></div>
+      <div class="toc2"><a href=#tocitem4>Function: events.add(event, action)</a></div>
+      <div class="toc2"><a href=#tocitem5>Function: events.clear(event)</a></div>
+      <div class="toc2"><a href=#tocitem6>Function: events.delete(event, *idx)</a></div>
+      <div class="toc2"><a href=#tocitem7>Function: events.find(event=?, action=?)</a></div>
+      <div class="toc2"><a href=#tocitem8>Function: events.handle(event)</a></div>
+      <div class="toc2"><a href=#tocitem9>Function: events.mainkey()</a></div>
+      <div class="toc2"><a href=#tocitem10>Function: events.purge(event=?, action=?)</a></div>
+      <div class="toc2"><a href=#tocitem11>Function: events.show(eventPat)</a></div>
+    <div class="toc1"><a href=#tocitem12>Module: osd</a></div>
+      <div class="toc2"><a href=#tocitem13>Function: osd.display(s, alignment=?, font=?, color=?, duration=?)</a></div>
+    <div class="toc1"><a href=#tocitem14>Module: run</a></div>
+      <div class="toc2"><a href=#tocitem15>Function: run.here(command)</a></div>
+      <div class="toc2"><a href=#tocitem16>Function: run.killall(pids, sig=?)</a></div>
+      <div class="toc2"><a href=#tocitem17>Function: run.killwindow(sig=?, w=?, title=?, cls=?, ws=?)</a></div>
+      <div class="toc2"><a href=#tocitem18>Function: run.once(command, title=?, cls=?, ws=?)</a></div>
+      <div class="toc2"><a href=#tocitem19>Function: run.there(command, ws)</a></div>
+    <div class="toc1"><a href=#tocitem20>Module: setup</a></div>
+      <div class="toc2"><a href=#tocitem21>Function: setup.activate(features=?, interval=?, autostart=?, key=?)</a></div>
+      <div class="toc2"><a href=#tocitem22>Function: setup.clean()</a></div>
+      <div class="toc2"><a href=#tocitem23>Function: setup.deactivate()</a></div>
+      <div class="toc2"><a href=#tocitem24>Function: setup.reactivate()</a></div>
+    <div class="toc1"><a href=#tocitem25>Module: wallpaper</a></div>
+      <div class="toc2"><a href=#tocitem26>Function: wallpaper.apply(randomize=?, report=?, display=?)</a></div>
+      <div class="toc2"><a href=#tocitem27>Function: wallpaper.rate(delta=?)</a></div>
+      <div class="toc2"><a href=#tocitem28>Function: wallpaper.select()</a></div>
+      <div class="toc2"><a href=#tocitem29>Function: wallpaper.set(path, treatment=?, display=?)</a></div>
+    <div class="toc1"><a href=#tocitem30>Module: window</a></div>
+      <div class="toc2"><a href=#tocitem31>Function: window.active()</a></div>
+      <div class="toc2"><a href=#tocitem32>Function: window.align(alignment, w=?)</a></div>
+      <div class="toc2"><a href=#tocitem33>Function: window.move(x, y, w=?)</a></div>
+      <div class="toc2"><a href=#tocitem34>Function: window.pick()</a></div>
+      <div class="toc2"><a href=#tocitem35>Function: window.root()</a></div>
+      <div class="toc2"><a href=#tocitem36>Function: window.search(title=?, cls=?, ws=?, prc=?)</a></div>
+      <div class="toc2"><a href=#tocitem37>Function: window.show(w=?)</a></div>
+      <div class="toc2"><a href=#tocitem38>Function: window.tile(tile1, tile2, w=?)</a></div>
+    <div class="toc1"><a href=#tocitem39>Module: workspace</a></div>
+      <div class="toc2"><a href=#tocitem40>Function: workspace.bring(ws, w=?)</a></div>
+      <div class="toc2"><a href=#tocitem41>Function: workspace.report()</a></div>
+      <div class="toc2"><a href=#tocitem42>Function: workspace.send(ws, w=?)</a></div>
+      <div class="toc2"><a href=#tocitem43>Function: workspace.switch(ws)</a></div>
+    <div class="toc1"><a href=#tocitem44>CMDO Namespace</a></div>
+      <div class="toc2"><a href=#tocitem45>CMDO Core Classes</a></div>
+      <div class="toc2"><a href=#tocitem46>CMDO Core Functions</a></div>
+      <div class="toc2"><a href=#tocitem47>CMDO Core Variables</a></div>
+      <div class="toc2"><a href=#tocitem48>CMDO Exported Types</a></div>
+    <div class="toc1"><a href=#tocitem49>WNDO Namespace</a></div>
+      <div class="toc2"><a href=#tocitem50>WNDO Exported Types</a></div>
+  </div>
+  <h2 class="heading2">Module: (core)</h2>
+    <span id="tocitem1">
+    <h3 class="heading3">Function: checkInstall()</h3>
+          <div class="block">
+          Validate installation by checking dependencies.
+          </div>
+    </span>
+    <span id="tocitem2">
+    <h3 class="heading3">Function: normalizeKey(s)</h3>
+          <div class="block">
+          Standardize keyboard key and modifier names and order them for
+          consistency.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              s
+              </td>
+              <td class="gencell">
+              key string
+              </td>
+            </tr>
+          </table>
+    </span>
+  <span id="tocitem3">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: events</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem4">
+    <h3 class="heading3">Function: events.add(event, action)</h3>
+          <div class="block">
+          Add command binding to named event.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              event
+              </td>
+              <td class="gencell">
+              event name
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              action
+              </td>
+              <td class="gencell">
+              action command
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem5">
+    <h3 class="heading3">Function: events.clear(event)</h3>
+          <div class="block">
+          Clear all event actions.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              event
+              </td>
+              <td class="gencell">
+              event name
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem6">
+    <h3 class="heading3">Function: events.delete(event, *idx)</h3>
+          <div class="block">
+          Delete specific event action(s).
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              event
+              </td>
+              <td class="gencell">
+              event name
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              &lt;0-n of: action index&gt;...
+              </td>
+              <td class="gencell">
+              (variable argument list)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem7">
+    <h3 class="heading3">Function: events.find(event=?, action=?)</h3>
+          <div class="block">
+          Find event/index/action triplets matching event and or action
+          patterns.
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              action
+              </td>
+              <td class="gencell">
+              action string pattern (default=all)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              event
+              </td>
+              <td class="gencell">
+              event name pattern (default=all)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem8">
+    <h3 class="heading3">Function: events.handle(event)</h3>
+          <div class="block">
+          Handle a named event by looking up and invoking assigned action(s).
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              event
+              </td>
+              <td class="gencell">
+              event name
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem9">
+    <h3 class="heading3">Function: events.mainkey()</h3>
+    </span>
+    <span id="tocitem10">
+    <h3 class="heading3">Function: events.purge(event=?, action=?)</h3>
+          <div class="block">
+          Find and purge by event/action pattern(s). Patterns support full
+          regular expression syntax. Return dictionary mapping event names to
+          lists of objects with "idx" and "action" members.
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              action
+              </td>
+              <td class="gencell">
+              action string pattern (default=all)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              event
+              </td>
+              <td class="gencell">
+              event name pattern (default=all)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem11">
+    <h3 class="heading3">Function: events.show(eventPat)</h3>
+          <div class="block">
+          List actions for event pattern.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              eventPat
+              </td>
+              <td class="gencell">
+              event name pattern (default=all) [o]
+              </td>
+            </tr>
+          </table>
+          <div class="block">
+          [o]=optional
+          </div>
+    </span>
+  </span>
+  <span id="tocitem12">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: osd</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem13">
+    <h3 class="heading3">Function: osd.display(s, alignment=?, font=?, color=?, duration=?)</h3>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              s
+              </td>
+              <td class="gencell">
+              string
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              alignment
+              </td>
+              <td class="gencell">
+              alignment # (default=5)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              color
+              </td>
+              <td class="gencell">
+              string (default=yellow)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              duration
+              </td>
+              <td class="gencell">
+              integer (default=2)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              font
+              </td>
+              <td class="gencell">
+              string (default=lucidasans-bold-24)
+              </td>
+            </tr>
+          </table>
+    </span>
+  </span>
+  <span id="tocitem14">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: run</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem15">
+    <h3 class="heading3">Function: run.here(command)</h3>
+          <div class="block">
+          Run command in current workspace.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              command
+              </td>
+              <td class="gencell">
+              command
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem16">
+    <h3 class="heading3">Function: run.killall(pids, sig=?)</h3>
+          <div class="block">
+          Terminate or signal process(es) based on PID or regular expression.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              pids
+              </td>
+              <td class="gencell">
+              process id or name pattern
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              sig
+              </td>
+              <td class="gencell">
+              Signal number/name. See "man 7 signal" or "man kill". (default=
+              TERM)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem17">
+    <h3 class="heading3">Function: run.killwindow(sig=?, w=?, title=?, cls=?, ws=?)</h3>
+          <div class="block">
+          Terminate or signal process(es) based on specified window(s). Must
+          provide at least one keyword argument.
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              cls
+              </td>
+              <td class="gencell">
+              window class name
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              sig
+              </td>
+              <td class="gencell">
+              Signal number/name. See "man 7 signal" or "man kill". (default=
+              TERM)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              title
+              </td>
+              <td class="gencell">
+              window title pattern
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick"
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem18">
+    <h3 class="heading3">Function: run.once(command, title=?, cls=?, ws=?)</h3>
+          <div class="block">
+          Run command. Don't run if a window matching all specified title, cls,
+          and workspace criteria exists.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              command
+              </td>
+              <td class="gencell">
+              command
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              cls
+              </td>
+              <td class="gencell">
+              window class name
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              title
+              </td>
+              <td class="gencell">
+              window title pattern
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem19">
+    <h3 class="heading3">Function: run.there(command, ws)</h3>
+          <div class="block">
+          Run command in another workspace.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              command
+              </td>
+              <td class="gencell">
+              command
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+    </span>
+  </span>
+  <span id="tocitem20">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: setup</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem21">
+    <h3 class="heading3">Function: setup.activate(features=?, interval=?, autostart=?, key=?)</h3>
+          <div class="block">
+          Activate user features by surgically updating configuration.
+          </div>
+              <div class="block">
+              Checks prerequisites and sets up events. The features argument
+              indicates which event bindings to create. Pre-existing bindings
+              for unwanted features are not removed.
+              </div>
+              <table class="gentable">
+                <tr class="genrow">
+                  <th class="genheader">Feature</th>
+                  <th class="genheader">Description</th>
+                </tr>
+                <tr>
+                  <td class="gencell">
+                  align
+                  </td>
+                  <td class="gencell">
+                  Window alignment keys
+                  </td>
+                </tr>
+                <tr>
+                  <td class="gencell">
+                  tile
+                  </td>
+                  <td class="gencell">
+                  Window tiling keys
+                  </td>
+                </tr>
+                <tr>
+                  <td class="gencell">
+                  wallpaper
+                  </td>
+                  <td class="gencell">
+                  Automatic wallpaper changing and support keys
+                  </td>
+                </tr>
+                <tr>
+                  <td class="gencell">
+                  workspace
+                  </td>
+                  <td class="gencell">
+                  Workspace switching keys
+                  </td>
+                </tr>
+                <tr>
+                  <td class="gencell">
+                  other
+                  </td>
+                  <td class="gencell">
+                  Other actions, like kill window
+                  </td>
+                </tr>
+                <tr>
+                  <td class="gencell">
+                  all
+                  </td>
+                  <td class="gencell">
+                  All features
+                  </td>
+                </tr>
+              </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              autostart
+              </td>
+              <td class="gencell">
+              add to autostart programs (default=True)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              features
+              </td>
+              <td class="gencell">
+              comma-separated features
+              (align|tile|wallpaper|workspace|other|all) (default=all)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              interval
+              </td>
+              <td class="gencell">
+              random wallpaper changing interval (default=20)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              key
+              </td>
+              <td class="gencell">
+              prefix key string or "direct" for direct keystrokes (default=
+              direct)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem22">
+    <h3 class="heading3">Function: setup.clean()</h3>
+          <div class="block">
+          Thoroughly clean all user configuration.
+          </div>
+    </span>
+    <span id="tocitem23">
+    <h3 class="heading3">Function: setup.deactivate()</h3>
+          <div class="block">
+          Deactivate user features.
+          </div>
+    </span>
+    <span id="tocitem24">
+    <h3 class="heading3">Function: setup.reactivate()</h3>
+          <div class="block">
+          Reactive previously-selected user features.
+          </div>
+    </span>
+  </span>
+  <span id="tocitem25">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: wallpaper</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+  This module implements various desktop wallpaper manipulations.
+    <span id="tocitem26">
+    <h3 class="heading3">Function: wallpaper.apply(randomize=?, report=?, display=?)</h3>
+          <div class="block">
+          Apply saved wallpaper to current workspace. When saved wallpaper image
+          path is a directory chooses a random image from that directory.
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              display
+              </td>
+              <td class="gencell">
+              X display
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              randomize
+              </td>
+              <td class="gencell">
+              select new random wallpaper (default=False)
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              report
+              </td>
+              <td class="gencell">
+              report change on-screen (default=False)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem27">
+    <h3 class="heading3">Function: wallpaper.rate(delta=?)</h3>
+          <div class="block">
+          Increase or decrease the current wallpaper image's rating in order to
+          influence how often it gets randomly selected.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              delta
+              </td>
+              <td class="gencell">
+              integer (default=1) [o]
+              </td>
+            </tr>
+          </table>
+          <div class="block">
+          [o]=optional
+          </div>
+    </span>
+    <span id="tocitem28">
+    <h3 class="heading3">Function: wallpaper.select()</h3>
+          <div class="block">
+          If zenity is available brings up a dialog to pick a wallpaper image
+          file. Starts from the last visited directory.
+          </div>
+    </span>
+    <span id="tocitem29">
+    <h3 class="heading3">Function: wallpaper.set(path, treatment=?, display=?)</h3>
+          <div class="block">
+          Set wallpaper using an optional treatment. Can specify either a single
+          image file or a directory from which to choose a random image. Saves
+          settings for current workspace to configuration file for use by
+          wallpaper_apply().
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              path
+              </td>
+              <td class="gencell">
+              image file or directory
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              display
+              </td>
+              <td class="gencell">
+              X display
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              treatment
+              </td>
+              <td class="gencell">
+              wallpaper treatment (tile*|center|maxspect|scale) (default=tile)
+              </td>
+            </tr>
+          </table>
+    </span>
+  </span>
+  <span id="tocitem30">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: window</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem31">
+    <h3 class="heading3">Function: window.active()</h3>
+          <div class="block">
+          Get active window for passing to window functions. Normally
+          unnecessary, given that window arguments default to the active window.
+          </div>
+    </span>
+    <span id="tocitem32">
+    <h3 class="heading3">Function: window.align(alignment, w=?)</h3>
+          <div class="block">
+          Align window to position # 1-9 (shown below) without resizing. Left,
+          center or right alignments apply to the left edge, center or right
+          edge of the window. Top, middle or bottom alignments apply to the top
+          edge, middle or bottom edge of the window. Defaults to active window.
+          </div>
+<pre>
+1-----+--2--+-----3
+|     |     |     |
++-----+-----+-----+
+4     |  5  |     6
++-----+-----+-----+
+|     |     |     |
+7-----+--8--+-----9</pre>
+
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              alignment
+              </td>
+              <td class="gencell">
+              alignment #
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick" (default=
+              active)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem33">
+    <h3 class="heading3">Function: window.move(x, y, w=?)</h3>
+          <div class="block">
+          Move window to coordinates (x, y). Limited to visible work area.
+          Defaults to active window.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              x
+              </td>
+              <td class="gencell">
+              integer
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              y
+              </td>
+              <td class="gencell">
+              integer
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick" (default=
+              active)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem34">
+    <h3 class="heading3">Function: window.pick()</h3>
+          <div class="block">
+          Get user-picked window for passing to window functions. Normally
+          unnecessary, given that window arguments set to "pick" perform the
+          same function.
+          </div>
+    </span>
+    <span id="tocitem35">
+    <h3 class="heading3">Function: window.root()</h3>
+          <div class="block">
+          Get root window for passing to window functions. Note that many
+          functions are inappropriate for the root window, e.g. move().
+          </div>
+    </span>
+    <span id="tocitem36">
+    <h3 class="heading3">Function: window.search(title=?, cls=?, ws=?, prc=?)</h3>
+          <div class="block">
+          Return a list of matching window objects for given title, class name,
+          workspace, and or process (id) criteria. Title accepts regular
+          expressions. Can use results in a for...in loop to call window-related
+          functions.
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              cls
+              </td>
+              <td class="gencell">
+              window class name
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              prc
+              </td>
+              <td class="gencell">
+              process id or name pattern
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              title
+              </td>
+              <td class="gencell">
+              window title pattern
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem37">
+    <h3 class="heading3">Function: window.show(w=?)</h3>
+          <div class="block">
+          Display window position and size properties. Defaults to active
+          window.
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick" (default=
+              active)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem38">
+    <h3 class="heading3">Function: window.tile(tile1, tile2, w=?)</h3>
+          <div class="block">
+          Resize and move window to fill rectangle enclosed by two tile #
+          arguments. Asymmetrical tiling grid (shown below) has larger left
+          column and top row. Defaults to active window.
+          </div>
+<pre>
++---------+-----+
+|         |     |
+|    1    |  2  |
+|         |     |
++---------+-----+
+|    3    |  4  |
++---------+-----+</pre>
+
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              tile1
+              </td>
+              <td class="gencell">
+              from tile #
+              </td>
+            </tr>
+            <tr>
+              <td class="gencell">
+              tile2
+              </td>
+              <td class="gencell">
+              to tile # (default=from tile #) [o]
+              </td>
+            </tr>
+          </table>
+          <div class="block">
+          [o]=optional
+          </div>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick" (default=
+              active)
+              </td>
+            </tr>
+          </table>
+    </span>
+  </span>
+  <span id="tocitem39">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Module: workspace</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem40">
+    <h3 class="heading3">Function: workspace.bring(ws, w=?)</h3>
+          <div class="block">
+          Bring window to another workspace # and switch to that workspace.
+          Specify "next" or "previous" to bring to the next or previous
+          workspace. Defaults to active window.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick" (default=
+              active)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem41">
+    <h3 class="heading3">Function: workspace.report()</h3>
+          <div class="block">
+          Report current workspace using on-screen display (OSD). Requires
+          "osd_cat" in the path.
+          </div>
+    </span>
+    <span id="tocitem42">
+    <h3 class="heading3">Function: workspace.send(ws, w=?)</h3>
+          <div class="block">
+          Send window to another workspace # or name, but stay on the current
+          workspace. Specify "next" or "previous" to send to the next or
+          previous workspace. Defaults to active window.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+        <h4 class="heading4">Keyword Arguments (Optional)</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Keyword</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              w
+              </td>
+              <td class="gencell">
+              window id (hex 0xnnn...), window object or "pick" (default=
+              active)
+              </td>
+            </tr>
+          </table>
+    </span>
+    <span id="tocitem43">
+    <h3 class="heading3">Function: workspace.switch(ws)</h3>
+          <div class="block">
+          Switch to another workspace #. Pass "next" or previous" to switch to
+          the next or previous workspace.
+          </div>
+        <h4 class="heading4">Ordered Arguments</h4>
+          <table class="gentable">
+            <tr class="genrow">
+              <th class="genheader">Label</th>
+              <th class="genheader">Description</th>
+            </tr>
+            <tr>
+              <td class="gencell">
+              ws
+              </td>
+              <td class="gencell">
+              workspace # (1-n), name, "current", "next", or "previous"
+              </td>
+            </tr>
+          </table>
+    </span>
+  </span>
+  <span id="tocitem44">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">CMDO Namespace</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem45">
+    <h3 class="heading3">CMDO Core Classes</h3>
+      <h4 class="heading4">CMDO.ExcArgument</h4>
+        Argument processing exception
+      <h4 class="heading4">CMDO.ExcBase</h4>
+        Base exception class
+      <h4 class="heading4">CMDO.ExcConversion</h4>
+        Argument conversion exception
+      <h4 class="heading4">CMDO.ExcDoc</h4>
+        Documentation exception
+      <h4 class="heading4">CMDO.ExcFunction</h4>
+        Exported function exception
+      <h4 class="heading4">CMDO.ExcLoad</h4>
+        Load-time exception
+      <h4 class="heading4">CMDO.ExcPath</h4>
+        File or directory exception
+      <h4 class="heading4">CMDO.ExcQuit</h4>
+        Application termination exception
+      <h4 class="heading4">CMDO.ExportedClass</h4>
+        Base class for classes exported from module files
+      <h4 class="heading4">CMDO.More</h4>
+        Special type for accepting a variable quantity of additional arguments.
+        Optional arguments specify a validation type ("type"), a minimum
+        quantity ("countMin"), a maximum quantity ("countMax"), and a
+        description ("desc").
+      <h4 class="heading4">CMDO.TypeBase</h4>
+        Base argument type class
+    </span>
+    <span id="tocitem46">
+    <h3 class="heading3">CMDO Core Functions</h3>
+      <h4 class="heading4">CMDO.abort(*msgs)</h4>
+        Display error message(s) and quit (violently)
+      <h4 class="heading4">CMDO.block(label, indent, border, *msgs)</h4>
+        Display message(s) with label, border and indentation.
+      <h4 class="heading4">CMDO.config(name, caseSensitive = False)</h4>
+        Returns a configuration object for accessing a configuration file in the
+        application home directory.
+      <h4 class="heading4">CMDO.confirm(*msgs)</h4>
+        Display message(s) and return True if user said "yes".
+      <h4 class="heading4">CMDO.docParse(path)</h4>
+        Parses structured text documentation in a file and returns the root
+        node.
+      <h4 class="heading4">CMDO.docParseString(s)</h4>
+        Parses structured text documentation in a string and returns the root
+        node.
+      <h4 class="heading4">CMDO.error(*msgs)</h4>
+        Display error message(s)
+      <h4 class="heading4">CMDO.execute(s)</h4>
+        Executes a string as one or more commands by using smart command parsing
+        to detect and handle simplified syntax, if used.
+      <h4 class="heading4">CMDO.findProgram(*names)</h4>
+        Returns first occurance of program name(s) in the system path.
+      <h4 class="heading4">CMDO.getFunction(s)</h4>
+        Converts function name to Function object.
+      <h4 class="heading4">CMDO.getVersionedPath(path, suffix)</h4>
+        Convert path to versioned path by adding suffix and counter when
+        necessary.
+      <h4 class="heading4">CMDO.glob(pathname)</h4>
+        Return a list of paths matching a pathname pattern. The pattern may
+        contain simple shell-style wildcards a la fnmatch.
+      <h4 class="heading4">CMDO.info(*msgs)</h4>
+        Display message(s)
+      <h4 class="heading4">CMDO.isString(o)</h4>
+        Returns True if the argument is a string type.
+      <h4 class="heading4">CMDO.message(label, indent, *msgs)</h4>
+        Display message(s) with label and indentation.
+      <h4 class="heading4">CMDO.prompt(pmsg, isvalid = None, fixer = None, msgs = [])</h4>
+        Display message(s) and request response.
+      <h4 class="heading4">CMDO.purgeVersions(path, suffix, nKeep, reverse = False)</h4>
+        Purge file versions created by getVersionedPath. Purge specified
+        quantity in normal or reverse sequence.
+      <h4 class="heading4">CMDO.quit(*msgs)</h4>
+        Display message(s) and quit (normally)
+      <h4 class="heading4">CMDO.registerGUI(name, cls)</h4>
+        Register GUI name and class.
+      <h4 class="heading4">CMDO.registerPublisher(name, cls)</h4>
+        Register documentation publisher name and class.
+      <h4 class="heading4">CMDO.sortedIter(seq)</h4>
+        Iterates sequence object in alphabetical order.
+      <h4 class="heading4">CMDO.spawn(command)</h4>
+        Spawns a command process. Returns the process ID (PID).
+      <h4 class="heading4">CMDO.textFormatPlain(text, indent, width = 0)</h4>
+        Returns lines split by linefeeds, indented and wrapped to an optional
+        width. Arguments are (text, indent and width (defaults to 0).
+      <h4 class="heading4">CMDO.textFormatWrapped(text, indent, prefix, width)</h4>
+        Returns word-wrapped text lines using indentation, a line prefix, and a
+        maximum width. Arguments are (text, indent, prefix, width).
+      <h4 class="heading4">CMDO.warning(*msgs)</h4>
+        Display warning message(s)
+    </span>
+    <span id="tocitem47">
+    <h3 class="heading3">CMDO Core Variables</h3>
+      <h4 class="heading4">CMDO.debug</h4>
+        Display debugging messages if True
+      <h4 class="heading4">CMDO.engine</h4>
+        Engine object
+      <h4 class="heading4">CMDO.extConfig</h4>
+        Configuration file extension, including leading "."
+      <h4 class="heading4">CMDO.extCore</h4>
+        Core module file extension, including leading "."
+      <h4 class="heading4">CMDO.extDoc</h4>
+        Documentation module file extension, including leading "."
+      <h4 class="heading4">CMDO.extModule</h4>
+        Module file extension, including leading "."
+      <h4 class="heading4">CMDO.guis</h4>
+        Dictionary of available GUIs
+      <h4 class="heading4">CMDO.maxTracebackLines</h4>
+        (undocumented int)
+      <h4 class="heading4">CMDO.maxWidth</h4>
+        (undocumented int)
+      <h4 class="heading4">CMDO.maxint</h4>
+        (undocumented int)
+      <h4 class="heading4">CMDO.program</h4>
+        Application object
+      <h4 class="heading4">CMDO.publishers</h4>
+        Dictionary of available formats/publishers
+      <h4 class="heading4">CMDO.reKwarg</h4>
+        (undocumented SRE_Pattern)
+      <h4 class="heading4">CMDO.reNum</h4>
+        (undocumented SRE_Pattern)
+      <h4 class="heading4">CMDO.reSym</h4>
+        (undocumented SRE_Pattern)
+      <h4 class="heading4">CMDO.verbose</h4>
+        Display verbose messages if True
+    </span>
+    <span id="tocitem48">
+    <h3 class="heading3">CMDO Exported Types</h3>
+      <h4 class="heading4">CMDO.Boolean</h4>
+        A true/false value. Interprets (case-insensitive) "true"/"false",
+        "yes"/"no", and zero/non-zero.
+      <h4 class="heading4">CMDO.Command</h4>
+        An unchecked path string.
+      <h4 class="heading4">CMDO.Enum</h4>
+        Enumerated value from a list of possible values.
+      <h4 class="heading4">CMDO.Function</h4>
+        A named function.
+      <h4 class="heading4">CMDO.GUI</h4>
+        GUI driver.
+      <h4 class="heading4">CMDO.Integer</h4>
+        An integer number.
+      <h4 class="heading4">CMDO.Path</h4>
+        An unchecked path string.
+      <h4 class="heading4">CMDO.PathFile</h4>
+        A path to an existing file.
+      <h4 class="heading4">CMDO.Publisher</h4>
+        Publication format, e.g. "text", "html" or "xml".
+      <h4 class="heading4">CMDO.RegExp</h4>
+        A regular expression for searches.
+      <h4 class="heading4">CMDO.String</h4>
+        A text string.
+      <h4 class="heading4">CMDO.TagList</h4>
+        A comma-separated tag list.
+      <h4 class="heading4">CMDO.URL</h4>
+        An unchecked URL string.
+    </span>
+  </span>
+  <span id="tocitem49">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">WNDO Namespace</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem50">
+    <h3 class="heading3">WNDO Exported Types</h3>
+      <h4 class="heading4">WNDO.Action</h4>
+        Event action string with function call and arguments.
+      <h4 class="heading4">WNDO.ActionIndex</h4>
+        Integer index specifying a particular action for an event. Actions are
+        deleted by index.
+      <h4 class="heading4">WNDO.ActionPattern</h4>
+        Regular expression for finding one or more event actions.
+      <h4 class="heading4">WNDO.Alignment</h4>
+        A screen alignment between 1 and 9
+      <h4 class="heading4">WNDO.Bindings</h4>
+        Default key binding descriptions, commands, and keys by feature.
+      <h4 class="heading4">WNDO.ClassName</h4>
+        Window class name
+      <h4 class="heading4">WNDO.Coordinate</h4>
+        An X Window coordinate value
+      <h4 class="heading4">WNDO.Display</h4>
+        X Display
+      <h4 class="heading4">WNDO.Event</h4>
+        Event tag, optionally prefixed with "key:" for keyboard events.
+      <h4 class="heading4">WNDO.EventPattern</h4>
+        Regular expression for finding one or more events.
+      <h4 class="heading4">WNDO.ExcAlignment</h4>
+        Window alignment exception
+      <h4 class="heading4">WNDO.ExcHeartbeat</h4>
+        Heartbeat interval exception
+      <h4 class="heading4">WNDO.ExcOSD</h4>
+        On-screen display exception
+      <h4 class="heading4">WNDO.ExcProcess</h4>
+        Process management exception
+      <h4 class="heading4">WNDO.ExcRoot</h4>
+        Root window access exception
+      <h4 class="heading4">WNDO.ExcSetup</h4>
+        Setup operation exception
+      <h4 class="heading4">WNDO.ExcSignal</h4>
+        Signal argument exception
+      <h4 class="heading4">WNDO.ExcTile</h4>
+        Window tiling exception
+      <h4 class="heading4">WNDO.ExcWallpaper</h4>
+        Wallpaper management exception
+      <h4 class="heading4">WNDO.ExcWindow</h4>
+        Window management exception
+      <h4 class="heading4">WNDO.ExcWorkspace</h4>
+        Workspace management exception
+      <h4 class="heading4">WNDO.ExcXMLTweak</h4>
+        XML tweaking exception
+      <h4 class="heading4">WNDO.FeatureList</h4>
+        Indicates which features to set up with key bindings, etc. Returns a
+        list of feature objects.
+      <h4 class="heading4">WNDO.Features</h4>
+        Comma-separated list of feature names or "all" for all features.
+      <h4 class="heading4">WNDO.Heartbeat</h4>
+        A heartbeat event interval. Zero disables the interval.
+      <h4 class="heading4">WNDO.Process</h4>
+        A process identified by PID or regular expression
+      <h4 class="heading4">WNDO.Signal</h4>
+        A system signal for killing or interrupting processes
+      <h4 class="heading4">WNDO.Tile</h4>
+        A screen tile position between 1 and 4
+      <h4 class="heading4">WNDO.TileFrom</h4>
+        Starting tile #
+      <h4 class="heading4">WNDO.TileTo</h4>
+        Ending tile #
+      <h4 class="heading4">WNDO.Title</h4>
+        Window title pattern
+      <h4 class="heading4">WNDO.WMRootWindow</h4>
+        Root window class with properties
+      <h4 class="heading4">WNDO.WMWindow</h4>
+        Window class with properties
+      <h4 class="heading4">WNDO.WallpaperTreatment</h4>
+        A wallpaper treatment for applying an image to the desktop
+      <h4 class="heading4">WNDO.Window</h4>
+        A Window argument must be a hex window id (as used by xwininfo, xprop
+        and others), e.g. 0x12345678 or a WMWindow object. WMWindow objects are
+        provided by functions like window_active(), window_root() or
+        window_search().
+      <h4 class="heading4">WNDO.Workspace</h4>
+        Workspace argument type
+      <h4 class="heading4">WNDO.XMLConfig</h4>
+        Provides read/write access to an XML configuration file with given
+        indentation, node ordering, and file name suffix. If backup is a string,
+        e.g. '~', that string is appended to the file name. If backup is a
+        number (n), n backup copies are maintained with the suffix and "-###"
+        inserted before the extension. If reverse is True then new files get the
+        versioned name.
+    </span>
+  </span>
+</div>
+
+</body>
+</html>

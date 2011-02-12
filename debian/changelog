@@ -1,0 +1,6 @@
+wndo (0.7) edgy; urgency=low
+
+  * Renamed fbdo project to wndo
+  * Gnome support, simpler setup and key grabbing
+
+ -- Steve Cooper <steve@wijjo.com>  Sat, 07 Jul 2007 16:49:12 -0700

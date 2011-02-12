@@ -1,0 +1,1393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+<title>Wndo help readme</title>
+
+<style type="text/css">
+* {
+    font-size: 12pt;
+}
+
+.h1bar {
+    background-color: #aaaaff;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding: 4px;
+    width: 100%;
+    height: auto;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.h1barheading {
+    font-size: 16pt;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 4px;
+}
+
+.h1bartopcell {
+    text-align: right;
+}
+
+.h1bartoplink {
+    font-size: 11pt;
+    text-indent: 1em;
+    padding: 2px;
+}
+
+.h2bar {
+    background-color: #e8e8ff;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    padding: 2px;
+    width: 100%;
+    height: auto;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.h2barheading {
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 2px;
+}
+
+.h2bartopcell {
+    text-align: right;
+}
+
+.h2bartoplink {
+    font-size: 11pt;
+    text-indent: 1em;
+    padding: 2px;
+}
+
+.heading1 {
+    background-color: #aaaaff;
+    font-size: 16pt;
+    font-weight: bold;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 4px;
+}
+
+.heading2 {
+    background-color: #e8e8ff;
+    font-size: 14pt;
+    font-weight: bold;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 2px;
+}
+
+.heading3 {
+    border-bottom: 1px solid gray;
+    width: auto;
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.heading4 {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-top: 12px;
+    margin-bottom: 6px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.heading5 {
+    font-size: 12pt;
+    font-weight: italic;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.heading6 {
+    font-size: 11pt;
+    font-weight: italic;
+    margin-top: 8px;
+    margin-bottom: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+.gentable {
+    border: 1px solid gray;
+    margin-bottom: 8px;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.genheader {
+    border: 1px solid gray;
+    background-color: #F2F2FF;
+    padding: 2px 4px;
+}
+
+.genrow {
+}
+
+.gencell {
+    border: 1px solid gray;
+    padding: 2px 4px;
+}
+
+ol {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: -8px;
+    margin-right: 0px;
+}
+
+ol li {
+    list-style-type: decimal;
+}
+
+ul li {
+}
+
+p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+}
+
+pre {
+    background-color: #eeeeee;
+    font-size: 10pt;
+}
+
+.tocblock {
+    border: 1px solid gray;
+    background-color: #eeeeff;
+    padding: 10px;
+    margin: 20px;
+}
+
+.toc0 {
+}
+
+.toc1 {
+    padding-top: 10px;
+    font-weight: bold;
+}
+
+.toc2 {
+    padding-left: 16px;
+}
+
+.toc3 {
+    padding-left: 32px;
+}
+
+.toc4 {
+    padding-left: 48px;
+}
+
+.block {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+</style>
+
+<style type="text/css" media="print">
+.h1bartoplink {
+    display: none;
+}
+
+.h2bartoplink {
+    display: none;
+}
+
+.tocblock {
+    display: none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 class="heading1">Wndo README</h1>
+  <div id="toc" class="tocblock">
+    <div class="toc1"><a href=#tocitem1>Summary</a></div>
+    <div class="toc1"><a href=#tocitem2>General</a></div>
+      <div class="toc2"><a href=#tocitem3>Introduction</a></div>
+      <div class="toc2"><a href=#tocitem4>Goals</a></div>
+      <div class="toc2"><a href=#tocitem5>What's in it for end users?</a></div>
+      <div class="toc2"><a href=#tocitem6>What's in it for developers?</a></div>
+      <div class="toc2"><a href=#tocitem7>What's in it for the author?</a></div>
+      <div class="toc2"><a href=#tocitem8>Feedback (Please...)</a></div>
+      <div class="toc2"><a href=#tocitem9>How does it work?</a></div>
+    <div class="toc1"><a href=#tocitem10>Terminology</a></div>
+      <div class="toc2"><a href=#tocitem11>Cmdo module</a></div>
+      <div class="toc2"><a href=#tocitem12>Function</a></div>
+      <div class="toc2"><a href=#tocitem13>Command</a></div>
+    <div class="toc1"><a href=#tocitem14>Major Features</a></div>
+      <div class="toc2"><a href=#tocitem15>Window Alignment and Tiling</a></div>
+      <div class="toc2"><a href=#tocitem16>Workspace Management</a></div>
+      <div class="toc2"><a href=#tocitem17>Workspace Wallpaper Management</a></div>
+      <div class="toc2"><a href=#tocitem18>Workspace-Aware Application Launching</a></div>
+      <div class="toc2"><a href=#tocitem19>Events and Key Grabbing</a></div>
+    <div class="toc1"><a href=#tocitem20>Upgrading from Fbdo</a></div>
+      <div class="toc2"><a href=#tocitem21>Uninstalling Fbdo</a></div>
+      <div class="toc2"><a href=#tocitem22>Cleaning up Fluxbox changes</a></div>
+      <div class="toc2"><a href=#tocitem23>Cleaning up Xfce changes</a></div>
+    <div class="toc1"><a href=#tocitem24>Cmdo</a></div>
+    <div class="toc1"><a href=#tocitem25>Key Bindings</a></div>
+      <div class="toc2"><a href=#tocitem26>Window Alignment Bindings (Default)</a></div>
+      <div class="toc2"><a href=#tocitem27>Window Tiling Bindings (Default)</a></div>
+      <div class="toc2"><a href=#tocitem28>Workspace Management Bindings (Default)</a></div>
+      <div class="toc2"><a href=#tocitem29>Wallpaper Management Bindings (Default)</a></div>
+    <div class="toc1"><a href=#tocitem30>Wndo-spy Events</a></div>
+    <div class="toc1"><a href=#tocitem31>Extending (For Developers)</a></div>
+    <div class="toc1"><a href=#tocitem32>Relationship to Fluxspace</a></div>
+      <div class="toc2"><a href=#tocitem33>Wndo Advantages over Fluxspace</a></div>
+      <div class="toc2"><a href=#tocitem34>Wndo Disadvantages</a></div>
+    <div class="toc1"><a href=#tocitem35>Support Programs</a></div>
+      <div class="toc2"><a href=#tocitem36>Wndo-spy</a></div>
+      <div class="toc2"><a href=#tocitem37>Wndo-pick</a></div>
+      <div class="toc2"><a href=#tocitem38>Wndo-ctrl</a></div>
+      <div class="toc2"><a href=#tocitem39>X Consortium License (for Wndo-spy)</a></div>
+      <div class="toc2"><a href=#tocitem40>The Open Group License (for Wndo-pick)</a></div>
+    <div class="toc1"><a href=#tocitem41>FAQ</a></div>
+      <div class="toc2"><a href=#tocitem42>How can I see more verbose output from a failing command?</a></div>
+      <div class="toc2"><a href=#tocitem43>Why are events broken?</a></div>
+      <div class="toc2"><a href=#tocitem44>Why isn't wallpaper displayed?</a></div>
+      <div class="toc2"><a href=#tocitem45>Why isn't there a GUI (graphical user interface)?</a></div>
+      <div class="toc2"><a href=#tocitem46>Why doesn't my application launch on another workspace with "run.there"?</a></div>
+  </div>
+  <span id="tocitem1">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Summary</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <table class="gentable">
+      <tr>
+        <td class="gencell">
+        Author
+        </td>
+        <td class="gencell">
+        Steve Cooper&lt;steve@wijjo.com&gt;
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        License
+        </td>
+        <td class="gencell">
+          <a href="http://www.gnu.org/licenses/gpl.txt">GPL</a>
+          -see COPYING (1)(2)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        Home Page
+        </td>
+        <td class="gencell">
+          <a href="http://wijjo.com/wndo/">Wndo Home</a>
+        </td>
+      </tr>
+    </table>
+    <ol>
+      <li>
+      Source code for wndo-spy inherits the X Consortium license from the
+      original xev source code. See license text later in this document and in
+      the code.
+      </li>
+      <li>
+      Source code for wndo-pick inherits an Open Group license from the original
+      xkill source code. See license text later in this document and in the
+      code.
+      </li>
+    </ol>
+  </span>
+  <span id="tocitem2">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">General</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem3">
+    <h3 class="heading3">Introduction</h3>
+      <div class="block">
+      Wndo is a small suite of complementary tools for adding behavioral
+      extensions to
+        <a href="http://www.gnome.org/">Gnome</a>
+        ,
+        <a href="http://www.xfce.org/">Xfce</a>
+        ,
+        <a href="http://www.fluxbox.org/">Fluxbox</a>
+        , and other window managers. Wndo offers a plugin platform for tweaking
+        the desktop environment. It focuses on modifying behavior, rather than
+        adding desktop widgets. It has minimal dependencies, other than Python.
+      </div>
+      <div class="block">
+      Included modules handle window alignment, simple window tiling, process
+      management, wallpaper management, and custom keyboard shortcuts. Wallpaper
+      management capabilities include per-workspace and randomly-selected
+      wallpaper. It performs its own key grabbing in order to avoid interaction
+      and conflict with the equivalent window manager facility.
+      </div>
+    </span>
+    <span id="tocitem4">
+    <h3 class="heading3">Goals</h3>
+      <div class="block">
+      High priority goals are flexibility, extensibility, simple setup, and ease
+      of use. Much lower priorities are a pretty GUI and a slick installation
+      program. It's a building block, not a monolith.
+      </div>
+    </span>
+    <span id="tocitem5">
+    <h3 class="heading3">What's in it for end users?</h3>
+      <div class="block">
+      End users benefit from added functionality in their favorite window
+      manager. They also get a tool that will grow over time to include more and
+      varied extensions.
+      </div>
+      <div class="block">
+      It's particularly interesting to users that switch window managers (WMs).
+      Such users can bring their customized behaviors and keyboard shortcuts
+      from one WM to the next without extensive reconfiguring. Just re-run
+      "setup.activate" to activate Wndo in the new WM. In many cases you can get
+      away with doing nothing to switch, e.g. for WMs that use the XDG
+      "~/.config/autostart" directory and don't have a specialized way to
+      configure wallpaper.
+      </div>
+    </span>
+    <span id="tocitem6">
+    <h3 class="heading3">What's in it for developers?</h3>
+      <div class="block">
+      Developers get a simple platform for building window management
+      extensions, one that isn't tied to a particular window manager. They work
+      in a friendly and powerful high level language. Simply writing a new
+      function produces a new command. The function decorator exports it,
+      describes argument handling, and specifies help documentation. The end
+      result is a full command line interface, help system, reference guide,
+      etc.
+      </div>
+    </span>
+    <span id="tocitem7">
+    <h3 class="heading3">What's in it for the author?</h3>
+      <div class="block">
+      I'm scratching an itch. The results are useful to me. Even if nobody else
+      uses it, Wndo will remain an important component of my desktop
+      environment.
+      </div>
+      <div class="block">
+      Wndo and Cmdo are part of an experimental application construction tool
+      set and philosophy. Similar to many other development tools, the ultimate
+      goal is to reduce or eliminate as many non-core development burdens as
+      possible. Minimizing the demands of interface construction, help system
+      maintenance, and documentation production allows greater focus on the
+      real-world problems demanding your software solution.
+      </div>
+      <div class="block">
+      I personally find this a fun and easy way to build tools. Nothing would
+      make me happier than to know I'm helping other people be more productive.
+      I eagerly await your feedback to help me craft the tool YOU want. Are the
+      notions useful, misguided, or do they need improvement? Thanks for at
+      least checking it out!
+      </div>
+    </span>
+    <span id="tocitem8">
+    <h3 class="heading3">Feedback (Please...)</h3>
+      <div class="block">
+      This is the first Wndo release. A lot of work went into building a solid
+      platform for developing window management extensions. A little less work
+      went into the initial feature set. Despite being useful as is, the real
+      hope is to receive feedback that leads to building more of the tools that
+      people want and need.
+      </div>
+      <div class="block">
+      So please report problems (with as many details as you can provide), but
+      also voice what would make this software more useful to you. Don't
+      hesitate to ask, even if you have ideas that seem unrelated to the current
+      feature set.
+      </div>
+    </span>
+    <span id="tocitem9">
+    <h3 class="heading3">How does it work?</h3>
+      <div class="block">
+      Features are packaged as modules containing exported functions. These
+      functions can be used as commands from the command line. The commands also
+      work well as key or menu bindings. The following example waits for you to
+      click on a window and then moves and resizes the selected window to fill
+      the left side of the screen. See the Tutorial for more examples.
+      </div>
+<pre>
+wndo window.tile 1 3 w=pick</pre>
+
+      <div class="block">
+      Most features work with any window manager that is fully or mostly
+      compatible with
+        <a href="http://standards.freedesktop.org/wm-spec/wm-spec-1.4.html">EWMH standards</a>
+        . Automatic user setup works with Gnome, Xfce and Fluxbox. It will also
+        work for other window managers having similar configuration structure.
+        User setup is limited to adding wndo-spy to the auto-start list and
+        making other limited changes, if needed, to redirect wallpaper
+        management through Wndo. The latter change is only required for Xfce.
+      </div>
+      <div class="block">
+      Wndo is built on top of
+        <a href="http://wijjo.com/cmdo/">Cmdo</a>
+        (pronounced "commando"), a Python facility that converts a set of
+        "decorated" functions to a complete command-driven environment, with
+        full help. See the required Cmdo package for more information.
+      </div>
+      <div class="block">
+      New features are easily added by placing modules into an appropriate
+      directory.
+      </div>
+    </span>
+  </span>
+  <span id="tocitem10">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Terminology</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem11">
+    <h3 class="heading3">Cmdo module</h3>
+      <div class="block">
+      A ".cmdo", ".cmdocore", or ".cmdodoc" file placed in a known location that
+      adds functions and features or documentation available from the Wndo
+      command line. Think of it as an ordinary Python module with some special
+      shared functionality automatically injected through WNDO and CMDO
+      namespaces. The phrase "Cmdo module" and the word "module" may be used
+      interchangeably throughout this documentation. Python modules are
+      distinguished by calling them "Python modules".
+      </div>
+    </span>
+    <span id="tocitem12">
+    <h3 class="heading3">Function</h3>
+      <div class="block">
+      A Python function exported from a Cmdo module available either as a Wndo
+      command or to provide data to another function/command.
+      </div>
+    </span>
+    <span id="tocitem13">
+    <h3 class="heading3">Command</h3>
+      <div class="block">
+      An exported function that can be directly invoked from the Wndo command
+      line. Non-command functions return data to be passed as arguments to
+      command functions.
+      </div>
+    </span>
+  </span>
+  <span id="tocitem14">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Major Features</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem15">
+    <h3 class="heading3">Window Alignment and Tiling</h3>
+      <div class="block">
+      The "window" module includes functions for moving windows to align a
+      window's edges, corners or center to the screen's edges, corners or
+      center. Automatic setup binds the keys Super-Keypad&lt;1-9&gt;
+      (Windows-Keypad&lt;1-9&gt;) to the 9 screen locations described in:
+      </div>
+<pre>
+wndo help window.align</pre>
+
+      <div class="block">
+      The "window" module also includes functions for fitting windows to an
+      asymmetric grid, similar to a tiling window manager, like a poor man's
+        <a href="http://modeemi.fi/~tuomov/ion/">ion3</a>
+        . Automatic setup binds the keys Super-Shift-Keypad&lt;1-9&gt;
+        (Windows-Shift-Keypad&lt;1-9&gt;) to the tiling layout described in:
+      </div>
+<pre>
+wndo help window.tile</pre>
+
+    </span>
+    <span id="tocitem16">
+    <h3 class="heading3">Workspace Management</h3>
+      <div class="block">
+      The "workspace" module provides various functions for changing the active
+      workspace and for moving windows between workspaces. Automatic setup binds
+      keys Ctrl-Alt-&lt;left/right&gt; to the previous/next active workspace and
+      Ctrl-Alt-Shift-&lt;left/right&gt; to bringing the active window to the
+      previous/next workspace. See:
+      </div>
+<pre>
+wndo help workspace</pre>
+
+    </span>
+    <span id="tocitem17">
+    <h3 class="heading3">Workspace Wallpaper Management</h3>
+      <div class="block">
+      The "wallpaper" module has functions to select random or specific
+      wallpaper on a per-workspace basis. Automatic setup binds events from
+      "wndo-spy" to wallpaper synchronization with workspace changes, selecting
+      new wallpaper, and refreshing or randomly choosing the current workspace
+      wallpaper. Current wallpaper selections are saved in the user
+      configuration file "~/.wndo/wallpaper.conf". See:
+      </div>
+<pre>
+wndo help wallpaper</pre>
+
+    </span>
+    <span id="tocitem18">
+    <h3 class="heading3">Workspace-Aware Application Launching</h3>
+      <div class="block">
+      The "run" module has functions to launch applications with the additional
+      capability to limit to a single instance or to launch in a particular
+      workspace. See:
+      </div>
+<pre>
+wndo help run</pre>
+
+    </span>
+    <span id="tocitem19">
+    <h3 class="heading3">Events and Key Grabbing</h3>
+      <div class="block">
+      Wndo maintains a mapping of key and non-key events to actions. You can use
+      it as a general purpose X hotkey facility by adding key events mapped to
+      "run.here" commands. Key events are distinguished by a "key:" prefix. For
+      example, to map Super+slash (Windows+slash) to xterm use the following
+      command.
+      </div>
+<pre>
+wndo events.add key key:Super+slash "run.once xterm"</pre>
+
+      <div class="block">
+      Wndo also supports limited key chaining. Automatic setup can optionally
+      assign a "main key" used in front of all the generated bindings. So rather
+      than using Super combined with keys on the numeric keypad, you can use
+      something like Super+space followed by a naked numeric keypad key as a
+      separate keystroke. The advantage is a smaller footprint in keyboard
+      mapping space. The disadvantage is slightly more awkward key combinations.
+      </div>
+      <div class="block">
+      Check out the other functions in the events module for how to display
+      event bindings or delete events and individual bindings.
+      </div>
+      <div class="block">
+      For more help see:
+      </div>
+<pre>
+wndo help events</pre>
+
+      <div class="block">
+      Restarting wndo-spy after changing event bindings is unnecessary, since
+      events get automatically reloaded after a short delay. Note that you may
+      need to twiddle the mouse or keyboard before an X event allows Wndo-spy to
+      check for changes.
+      </div>
+    </span>
+  </span>
+  <span id="tocitem20">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Upgrading from Fbdo</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+    Fbdo was renamed to Wndo once it achieved full and tested support for Gnome,
+    Xfce, in addition to Fluxbox. It has always supported EWMH-compliant Window
+    manager in theory. Removing the "fb" prefix distances it from Fluxbox as a
+    primary target.
+    </div>
+    <span id="tocitem21">
+    <h3 class="heading3">Uninstalling Fbdo</h3>
+      <div class="block">
+      Given the name change and the much simpler, but different, installation,
+      it is strongly recommended that you to a full uninstall of Fbdo. There are
+      no known conflicts, but you don't need it, and it may cause confusion to
+      have it around.
+      </div>
+      <div class="block">
+      See the uninstallation instructions in the Fbdo Install guide, although
+      the instructions in this package should be similar, except for the name.
+      </div>
+      <div class="block">
+      Unfortunately minor configuration edits may be necessary to remove all
+      traces of Fbdo. See the next couple of subsections for instructions
+      appropriate to your window manager.
+      </div>
+    </span>
+    <span id="tocitem22">
+    <h3 class="heading3">Cleaning up Fluxbox changes</h3>
+      <ol>
+        <li>
+        Edit "~/.fluxbox/keys" and remove the marked block of added key
+        bindings.
+        </li>
+        <li>
+        Edit "~/.fluxbox/startup" and remove the code to run fbspy.
+        </li>
+      </ol>
+    </span>
+    <span id="tocitem23">
+    <h3 class="heading3">Cleaning up Xfce changes</h3>
+      <ol>
+        <li>
+        Delete "~/.config/fbspy.desktop" or use the Autostart settings panel to
+        remove fbspy.
+        </li>
+        <li>
+        Use the Keyboard Settings panel to delete any Fbdo-related themes.
+        </li>
+      </ol>
+    </span>
+  </span>
+  <span id="tocitem24">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Cmdo</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+      <a href="http://wijjo.com/cmdo/">Cmdo</a>
+      ("commando") serves as the underlying engine. It supports the following
+      general features.
+    </div>
+    <ul>
+      <li>
+      Command line parsing, including both simplified single command and
+      extended multi-command forms.
+      </li>
+      <li>
+      Integrated help capable of text, HTML and XML formats.
+      </li>
+      <li>
+      Function invocation and argument checking/conversion.
+      </li>
+      <li>
+      Bash completion support, limited for now.
+      </li>
+      <li>
+      Prompted command input by preceding commands with "prompt".
+      </li>
+    </ul>
+  </span>
+  <span id="tocitem25">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Key Bindings</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+    The following tables list bindings generated by fluxbox.setup or xfce.setup
+    and some virtual keys available for user bindings. Names follow X11
+    standards, e.g. from X11/keysymdef.h. Note that the Mod4 and Super modifiers
+    are typically the Windows key. Alt and Mod1 are also interchangeable. Key
+    names starting with "KP_" are on the numeric keypad.
+    </div>
+    <span id="tocitem26">
+    <h3 class="heading3">Window Alignment Bindings (Default)</h3>
+      <table class="gentable">
+        <tr class="genrow">
+          <th class="genheader">Key</th>
+          <th class="genheader">Description</th>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Home
+          </td>
+          <td class="gencell">
+          Align window to position 1 (top-left)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Up
+          </td>
+          <td class="gencell">
+          Align window to position 2 (top-center)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Prior
+          </td>
+          <td class="gencell">
+          Align window to position 3 (top-right)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Left
+          </td>
+          <td class="gencell">
+          Align window to position 4 (middle-left)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Begin
+          </td>
+          <td class="gencell">
+          Align window to position 5 (middle-center)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Right
+          </td>
+          <td class="gencell">
+          Align window to position 6 (middle-right)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_End
+          </td>
+          <td class="gencell">
+          Align window to position 7 (bottom-left)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Down
+          </td>
+          <td class="gencell">
+          Align window to position 8 (bottom-center)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Next
+          </td>
+          <td class="gencell">
+          Align window to position 9 (bottom-right)
+          </td>
+        </tr>
+      </table>
+    </span>
+    <span id="tocitem27">
+    <h3 class="heading3">Window Tiling Bindings (Default)</h3>
+      <table class="gentable">
+        <tr class="genrow">
+          <th class="genheader">Key</th>
+          <th class="genheader">Description</th>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Home
+          </td>
+          <td class="gencell">
+          Tile window from 1 to 1 (top-left corner)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Up
+          </td>
+          <td class="gencell">
+          Tile window from 1 to 2 (top row)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Prior
+          </td>
+          <td class="gencell">
+          Tile window from 2 to 2 (top-right corner)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Left
+          </td>
+          <td class="gencell">
+          Tile window from 1 to 3 (left colum)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Begin
+          </td>
+          <td class="gencell">
+          Tile window from 1 to 4 (full screen)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Right
+          </td>
+          <td class="gencell">
+          Tile window from 2 to 4 (right column)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_End
+          </td>
+          <td class="gencell">
+          Tile window from 3 to 3 (bottom-left corner)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Down
+          </td>
+          <td class="gencell">
+          Tile window from 3 to 4 (bottom row)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+Shift+KP_Next
+          </td>
+          <td class="gencell">
+          Tile window from 4 to 4 (bottom-right corner)
+          </td>
+        </tr>
+      </table>
+    </span>
+    <span id="tocitem28">
+    <h3 class="heading3">Workspace Management Bindings (Default)</h3>
+      <table class="gentable">
+        <tr class="genrow">
+          <th class="genheader">Key</th>
+          <th class="genheader">Description</th>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Control+Alt+Left
+          </td>
+          <td class="gencell">
+          Switch to previous workspace
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Control+Alt+Right
+          </td>
+          <td class="gencell">
+          Switch to next workspace
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Control+Alt+Shift-Left
+          </td>
+          <td class="gencell">
+          Send window to previous workspace
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Control+Alt+Shift-Right
+          </td>
+          <td class="gencell">
+          Send window to next workspace
+          </td>
+        </tr>
+      </table>
+    </span>
+    <span id="tocitem29">
+    <h3 class="heading3">Wallpaper Management Bindings (Default)</h3>
+      <table class="gentable">
+        <tr class="genrow">
+          <th class="genheader">Key</th>
+          <th class="genheader">Description</th>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Multiply
+          </td>
+          <td class="gencell">
+          Select new wallpaper image (via dialog)
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Divide
+          </td>
+          <td class="gencell">
+          Reapply or randomize current wallpaper
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Add
+          </td>
+          <td class="gencell">
+          Increase current wallpaper rating
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Super+KP_Subtract
+          </td>
+          <td class="gencell">
+          Decrease current wallpaper rating
+          </td>
+        </tr>
+      </table>
+    </span>
+  </span>
+  <span id="tocitem30">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Wndo-spy Events</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+    The following lists events invoked by Wndo-spy. Manage assigned actions
+    through the "events" module. You can test event handling by running "wndo
+    events.handle&lt;event name&gt;", e.g. to test workspace change handling:
+    </div>
+<pre>
+wndo events.handle workspace</pre>
+
+    <table class="gentable">
+      <tr class="genrow">
+        <th class="genheader">Event</th>
+        <th class="genheader">Description</th>
+        <th class="genheader">Default Action</th>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace
+        </td>
+        <td class="gencell">
+        Workspace change (any)
+        </td>
+        <td class="gencell">
+        Refresh wallpaper
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace1
+        </td>
+        <td class="gencell">
+        Workspace 1 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace2
+        </td>
+        <td class="gencell">
+        Workspace 2 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace3
+        </td>
+        <td class="gencell">
+        Workspace 3 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace4
+        </td>
+        <td class="gencell">
+        Workspace 4 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace5
+        </td>
+        <td class="gencell">
+        Workspace 5 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace6
+        </td>
+        <td class="gencell">
+        Workspace 6 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace7
+        </td>
+        <td class="gencell">
+        Workspace 7 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace8
+        </td>
+        <td class="gencell">
+        Workspace 8 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        workspace9
+        </td>
+        <td class="gencell">
+        Workspace 9 change
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        timer1
+        </td>
+        <td class="gencell">
+        1 minute heartbeat
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        timer5
+        </td>
+        <td class="gencell">
+        5 minute heartbeat
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        timer20
+        </td>
+        <td class="gencell">
+        20 minute heartbeat
+        </td>
+        <td class="gencell">
+        Choose random wallpaper
+        </td>
+      </tr>
+      <tr>
+        <td class="gencell">
+        timer60
+        </td>
+        <td class="gencell">
+        60 minute heartbeat
+        </td>
+        <td class="gencell">
+        (unassigned)
+        </td>
+      </tr>
+    </table>
+  </span>
+  <span id="tocitem31">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Extending (For Developers)</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+    New commands typically require just adding a single new Python function. The
+    "@CMDO.export" function decorator specifies argument types for
+    pre-validation and conversion. A Python doc string automatically becomes
+    part of the integrated help system. See Tutorial and Cmdo documentation for
+    more information.
+    </div>
+    <div class="block">
+    There's no current plugin repository, but there's little doubt that one will
+    happen when demand exists and people start creating new plugins. In the
+    meantime, if you create something you'd like to share please send an email
+    and we'll find a way to share it.
+    </div>
+  </span>
+  <span id="tocitem32">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Relationship to Fluxspace</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+      <a href="http://fluxspace.sourceforge.net/">Fluxspace</a>
+      is the author's previous fluxbox-related project. Wndo provides many of
+      the same features, but has a completely different architecture, and little
+      shared code.
+    </div>
+    <span id="tocitem33">
+    <h3 class="heading3">Wndo Advantages over Fluxspace</h3>
+      <ul>
+        <li>
+        Fewer dependencies
+        </li>
+        <li>
+        Easier installation
+        </li>
+        <li>
+        Greater flexibility
+        </li>
+        <li>
+        Greater extensibility
+        </li>
+        <li>
+        Lighter weight C-only background process for events
+        </li>
+      </ul>
+    </span>
+    <span id="tocitem34">
+    <h3 class="heading3">Wndo Disadvantages</h3>
+      <div class="block">
+      Wndo has more overhead for initiating a command, because it runs from
+      scratch for each action. Fluxspace is always running (and consuming
+      memory). This overhead will likely lessen in the future by running as a
+      daemon process communicating through a channel like Dbus. Wndo also has
+      the disadvantage of relying on external tools, e.g. xprop, to implement
+      actions, the excuse/benefit being a reduction in build dependencies.
+      </div>
+    </span>
+  </span>
+  <span id="tocitem35">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">Support Programs</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <div class="block">
+    The following programs are small and simple C programs, all derived from
+    existing common tools. The code is modified and included here for a few
+    reasons.
+    </div>
+    <ul>
+      <li>
+      To avoid external dependencies and possible breakage due to unexpected
+      change.
+      </li>
+      <li>
+      To simplify the code and interface for the actual needs of Wndo.
+      </li>
+    </ul>
+    <div class="block">
+    Since these tools are based on existing work their individual licensing
+    choices are respected and preserved.
+    </div>
+    <span id="tocitem36">
+    <h3 class="heading3">Wndo-spy</h3>
+      <table class="gentable">
+        <tr>
+          <td class="gencell">
+          Author
+          </td>
+          <td class="gencell">
+          Steve Cooper&lt;steve@wijjo.com&gt;
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Based On
+          </td>
+          <td class="gencell">
+          xev-part of X11 and Xorg
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          License
+          </td>
+          <td class="gencell">
+          X Consortium license-see text below
+          </td>
+        </tr>
+      </table>
+      <div class="block">
+      Wndo-spy provides various hooks to support Wndo's deep customizations of
+      Fluxbox and similar EWMH-compliant window managers.
+      </div>
+      <div class="block">
+      Converts X workspace switching events and timed heartbeats to Wndo events.
+      </div>
+    </span>
+    <span id="tocitem37">
+    <h3 class="heading3">Wndo-pick</h3>
+      <table class="gentable">
+        <tr>
+          <td class="gencell">
+          Author
+          </td>
+          <td class="gencell">
+          Steve Cooper&lt;steve@wijjo.com&gt;
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Based On
+          </td>
+          <td class="gencell">
+          xkill
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          License
+          </td>
+          <td class="gencell">
+          The Open Group license-see text below
+          </td>
+        </tr>
+      </table>
+      <div class="block">
+      Provides a mouse cursor for selecting a window and emits the window id to
+      stdout. Used by Wndo to allow user-chosen window actions.
+      </div>
+    </span>
+    <span id="tocitem38">
+    <h3 class="heading3">Wndo-ctrl</h3>
+      <table class="gentable">
+        <tr>
+          <td class="gencell">
+          Author
+          </td>
+          <td class="gencell">
+          Steve Cooper&lt;steve@wijjo.com&gt;
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          Based On
+          </td>
+          <td class="gencell">
+          wmctrl
+          </td>
+        </tr>
+        <tr>
+          <td class="gencell">
+          License
+          </td>
+          <td class="gencell">
+          GPL Version 2-see COPYING
+          </td>
+        </tr>
+      </table>
+      <div class="block">
+      Manipulates windows and workspaces on behalf of Wndo.
+      </div>
+    </span>
+    <span id="tocitem39">
+    <h3 class="heading3">X Consortium License (for Wndo-spy)</h3>
+<pre>
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of the X Consortium shall
+not be used in advertising or otherwise to promote the sale, use or
+other dealings in this Software without prior written authorization
+from the X Consortium.</pre>
+
+    </span>
+    <span id="tocitem40">
+    <h3 class="heading3">The Open Group License (for Wndo-pick)</h3>
+<pre>
+Permission to use, copy, modify, distribute, and sell this software and its
+documentation for any purpose is hereby granted without fee, provided that
+the above copyright notice appear in all copies and that both that
+copyright notice and this permission notice appear in supporting
+documentation.
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of The Open Group shall
+not be used in advertising or otherwise to promote the sale, use or
+other dealings in this Software without prior written authorization
+from The Open Group.</pre>
+
+    </span>
+  </span>
+  <span id="tocitem41">
+  <table class="h2bar"><tr><td><h2 class="h2barheading">FAQ</h2></td><td class="h2bartopcell"><a href="#toc" class="h2bartoplink">Top</a></td></tr></table>
+    <span id="tocitem42">
+    <h3 class="heading3">How can I see more verbose output from a failing command?</h3>
+      <div class="block">
+      Re-run the command from a terminal window with the "-v" option added
+      before the command.
+      </div>
+    </span>
+    <span id="tocitem43">
+    <h3 class="heading3">Why are events broken?</h3>
+      <div class="block">
+      Wallpaper not responding to workspace changes and non-working keys is
+      likely due to Wndo-spy not running. First check for a wndo-spy process.
+      Bring up a graphical task manager and look for "wndo-spy" or run the
+      following from a command line.
+      </div>
+<pre>
+ps -e | grep wndo-spy</pre>
+
+    </span>
+    <span id="tocitem44">
+    <h3 class="heading3">Why isn't wallpaper displayed?</h3>
+      <div class="block">
+      First check that Wndo-spy is running (see above). Then check that the
+      wallpaper.apply command actually works. It may rely on broken external
+      tools, or an internal error may be occurring. Try the following from the
+      command line and look for errors.
+      </div>
+<pre>
+wndo wallpaper.apply</pre>
+
+    </span>
+    <span id="tocitem45">
+    <h3 class="heading3">Why isn't there a GUI (graphical user interface)?</h3>
+      <div class="block">
+      It's just a priority thing. Ultimately the intention is to generate GUIs
+      from existing rich function meta-data. For now, the closest approximation
+      is to use the "prompt" function. For example, to run setup activation with
+      prompting:
+      </div>
+<pre>
+wndo prompt setup.activate</pre>
+
+    </span>
+    <span id="tocitem46">
+    <h3 class="heading3">Why doesn't my application launch on another workspace with "run.there"?</h3>
+      <div class="block">
+      The "run.there" function relies on the window getting tagged with the PID
+      (process id) of the process it spawned. Some programs, like "xcalc" don't
+      mark the window with the PID. Other programs, like Xfce's "thunar", manage
+      processes in a more complex way. The process started isn't necessarily the
+      process that ends up running the window. We're quite open to suggestions
+      for a more reliable mechanism.
+      </div>
+    </span>
+  </span>
+
+</body>
+</html>

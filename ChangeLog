@@ -1,0 +1,24 @@
+Wndo Changelog
+--------------
+
+0.7 - 2007-08-11
+----------------
+	* Renamed Fbdo to Wndo
+	* Xfce setup fixes
+	* Use WM_CLIENT_LEADER to find window to move in run.there
+	* Support Gnome/Nautilus
+	* Support key grabbing to avoid deep WM configuration hooks
+	* Merge setup into a setup module.
+
+0.6 - 2007-06-07
+----------------
+	* Better support for more than one screen
+
+0.5 - 2007-04-12
+----------------
+	* Many improvements
+	* Ready for beta
+
+0.1 - 2007-02-14
+----------------
+	* Project created

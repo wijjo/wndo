@@ -1,0 +1,612 @@
+
+
++==========+
+| Tutorial |
++==========+
+
+
+-------------
+ Quick Start 
+-------------
+
+Automatic Setup
+---------------
+
+Automatic setup activates and configures Wndo for a user by performing these two
+functions.
+
+* Adds Wndo-spy as an autostart program.
+* Binds workspace events based on user preferences.
+* Binds keys to various functions based on user preferences.
+
+By default the following functionality is enabled.
+
+* All possible keys are bound to all available features.
+* Direct keys (with no prefix) provide one keystroke access.
+* Each workspace gets its own wallpaper.
+* Randomized wallpaper is changed every 20 minutes.
+
+The following command activates a user with the defaults.
+
+  wndo setup.activate
+
+Other setup options are available. Run the following to see the possibilities.
+
+  wndo help setup.activate
+
+For primitive prompting for each setup.activate option use this command.
+
+  wndo prompt setup.activate
+
+To substitute a 5 minute random wallpaper changing interval use:
+
+  wndo prompt setup.activate interval=5
+
+To disable random wallpaper changing interval use:
+
+  wndo prompt setup.activate interval=0
+
+Xfce environments require a special tweak in order to hook into its wallpaper
+management scheme. A Wndo-managed backdrop list substitutes for whatever image
+or backdrop list was being used. Your current image choice will be preserved by
+activation.
+
+See "Setting Workspace Wallpaper" below for specifics on managing wallpaper
+selections.
+
+Manual Setup
+------------
+
+Add wndo-spy to the autostart programs. In Fluxbox you can add the following
+line to "~/.fluxbox/startup".
+
+  wndo-spy &
+
+In an XDG-compatible window manager like Gnome or Xfce you can simply add
+"wndo-spy" to the autostart programs through the Autostart settings panel. The
+location of this panel may vary for different window managers, versions and
+distributions.
+
+Adding event bindings is much more tedious, requiring a separate Wndo command
+for each binding. For this reason the automatic setup is highly recommended, and
+safe. The only slightly complex change is for Xfce wallpapers and backups are
+maintained.
+
+Multiple Screen Setup
+---------------------
+
+If you have more than one screen you need one instance of wndo-spy assigned to
+each screen. You also need to initialize the wallpaper for each screen by
+specifying the display. For example, the lines in "~/.fluxbox/startup" for a two
+screen setup might look like this.
+
+  wndo-spy -d :0.0 &
+  wndo-spy -d :0.1 &
+
+Similar commmands may be used in the Gnome or Xfce autostart list (without the
+"&").
+
+Each screen is assigned its own X display id, e.g. ":0.0" and ":0.1" for two
+screens. Each screen needs its own instance of wndo-spy started with the
+appropriate display id passed to the "-d" option. Each wndo-spy instance only
+triggers events for its assigned screen, and events are processed by Wndo in the
+context of that display. So wallpaper changes triggered on screen N change the
+wallpaper on screen N.
+
+Finishing Up
+------------
+
+Completely exit Fluxbox and log in again. Verify proper installation by
+following the instructions in Setting Workspace Wallpaper or by trying some of
+the default key bindings (documented in README).
+
+Finishing Up
+------------
+
+Completely exit the window manager and log in again. Verify proper installation
+by following the instructions in Setting Workspace Wallpaper or by trying some
+of the default key bindings (documented in README).
+
+
+-----------------------------
+ Setting Workspace Wallpaper 
+-----------------------------
+
+Visit each workspace in turn (e.g. by using the default [Control-Alt-Right] key
+binding).
+
+Select a wallpaper image. From the command line you can use the following
+command.
+
+  wndo wallpaper.set /path/to/image
+
+Or if zenity is installed, you can use either the default key binding of
+[Super-Keypad*] ([Windows-Keypad*]) or the following command to choose a
+wallpaper image with a file selection dialog. Note that you can only choose
+specific images, not directories for random selections.
+
+  wndo wallpaper.select
+
+The wallpaper selections for each workspace should be saved and reloaded each
+time you visit a workspace.
+
+
+----------------------------------
+ Using Random Workspace Wallpaper 
+----------------------------------
+
+To set random wallpaper for a workspace choose a directory, rather than a single
+file, for example:
+
+  wndo wallpaper.set /path/to/directory
+
+The image will be randomly selected from that directory from all files with
+supported image file extensions. The randomly-selected wallpaper will not change
+unless you either force it to change or use a timed heartbeat to change it.
+
+Note that random wallpaper directory selection has no GUI alternative to the
+command line. Zenity does not support a directory selection dialog.
+
+To force a change use either the default key binding [Super-Keypad/]
+([Windows-Keypad/]) or the the following command from the command line (or a
+menu item).
+
+  wndo wallpaper.apply randomize=yes
+
+The wallpaper.apply command will not choose another image without the randomize
+option. It will just reload the previous one.
+
+To change it every 20 minutes add an event binding as follows.
+
+  wndo events.add timer20 "wallpaper.apply randomize=yes"
+
+Substitute "timer1", "timer5", or "timer60" in the binding for "timer20" to get
+1, 5, or 60 minute intervals. For now, these are the only intervals possible
+without wrapping the command in conditional Python logic.
+
+Wallpaper randomization also supports a primitive rating system to increase or
+decrease the chance of seeing a particular image. The default key bindings are
+[Super-Keypad+] or [Super-Keypad-] ([Windows-Keypad+] or [Windows-Keypad-]) to
+increase or decrease the current image's rating. If the "osd_cat" program is
+available you will briefly see the image and rating on the screen when you
+change it. When a rating falls below zero it disables the image. For now, to
+reenable an image you would need to edit~/.wndo/wallpaper.conf.
+
+
+------------------------
+ Using Window Alignment 
+------------------------
+
+Default Key Bindings
+--------------------
+
+The alignment function and bindings move windows (without resizing) to the
+screen edges, corners or center. Positions are visualized in the grid below,
+along with the default keypad bindings (grid #'s are in parentheses).
+
+Notice the relationship between keypad and screen geometries. Also note that
+it's relative positions that relate, rather than the numbers on the keys. All
+bound key combinations use the [Super] key modifier (the [Windows] key).
+
+All default bindings, including those shown below, are listed in the README Key
+Bindings section. Try them out on a window!
+
+              Screen                              Keypad
+  1---------+----2----+---------3     +---------+---------+---------+
+  |         |         |         |     |    7    |    8    |    9    |
+  |         |         |         |     |  Home   |   Up    |  PgUp   |
+  |         |         |         |     |   (1)   |   (2)   |   (3)   |
+  +---------+---------+---------+     +---------+---------+---------+
+  |         |         |         |     |    4    |    5    |    6    |
+  4         |    5    |         6     |  Left   |         |  Right  |
+  |         |         |         |     |   (4)   |   (5)   |   (6)   |
+  +---------+---------+---------+     +---------+---------+---------+
+  |         |         |         |     |    1    |    2    |    3    |
+  |         |         |         |     |   End   |  Down   |  PgDn   |
+  |         |         |         |     |   (7)   |   (8)   |   (9)   |
+  7---------+----8----+---------9     +---------+---------+---------+
+                              (add [Super] or [Windows] key modifiers)
+
+Command Line
+------------
+
+A single position # argument passed to the window.align function determines the
+screen position for the window. For example, this command moves the active
+window to the top left corner.
+
+  wndo window.align 1
+
+This command moves the active window to the middle of the screen.
+
+  wndo window.align 5
+
+Similar to other window functions, window.align takes an optional window
+argument, "w". It can be a hex window id, a call to a window-seeking function,
+or the value "pick" to select a target window with the mouse. The following
+command moves a window you choose with the mouse to the right side of the
+screen.
+
+  wndo window.align 6 w=pick
+
+
+---------------------
+ Using Window Tiling 
+---------------------
+
+Default Key Bindings
+--------------------
+
+Tiling resizes and moves windows to fill a set of virtual screen zones. The
+asymmetrical tiling zone grid and default keypad bindings, with covered tile
+numbers in parentheses, are shown below.
+
+The pattern maps corner keys to corner rectangles, keys between corners to
+entire screen edges, and the middle key to the full screen. Default bindings use
+the [Super-Shift] modifiers ([Super] is the [Windows] key). E.g.
+[Super-Shift-KP_Left] means to press [Windows], [Shift] and the keypad cursor
+left key (number 4).
+
+All bindings, including those shown below, are listed in the README Key Bindings
+section. Try them out on a window!
+
+              Screen                              Keypad
+  +-------------------+---------+     +---------+---------+---------+
+  |                   |         |     |    7    |    8    |    9    |
+  |                   |         |     |  Home   |   Up    |  PgUp   |
+  |                   |         |     |   (1)   |  (1,2)  |   (2)   |
+  |         1         |    2    |     +---------+---------+---------+
+  |                   |         |     |    4    |    5    |    6    |
+  |                   |         |     |  Left   |         |  Right  |
+  |                   |         |     |  (1,3)  |(1,2,3,4)|  (2,4)  |
+  +-------------------+---------+     +---------+---------+---------+
+  |                   |         |     |    1    |    2    |    3    |
+  |         3         |    4    |     |   End   |  Down   |  PgDn   |
+  |                   |         |     |   (3)   |  (3,4)  |   (4)   |
+  +-------------------+---------+     +---------+---------+---------+
+                  (add [Super-Shift] or [Windows-Shift] key modifiers)
+
+Command Line
+------------
+
+One or two tile # arguments passed to the window.tile function determine the
+screen rectangle assigned to the window. For example, this command fills the
+left side of the screen from top to bottom with the active window.
+
+  wndo window.tile 1 3
+
+This command fills the small rectangle in the bottom right corner with the
+active window.
+
+  wndo window.tile 4
+
+This command fills the screen with the active window.
+
+  wndo window.tile 1 4
+
+Similar to other window functions, window.tile takes an optional window
+argument, "w". It can be assigned a hex window id or the value "pick" to select
+a window with the mouse. The following command maximizes a window you choose by
+clicking with the mouse.
+
+  wndo window.tile 1 4 w=pick
+
+Notes
+-----
+
+The limited functionality is a compromise to support simple scenarios, while
+allowing a small set of intuitive and useful key bindings. Common scenarios
+include situations where a major window, like a browser or editor, is
+accompanied by one or two smaller tool windows, like a calculator. Future
+releases will evolve more sophistication as it becomes obvious what people want.
+
+
+------------------------------------
+ Starting and Stopping Applications 
+------------------------------------
+
+Starting in the Current Workspace
+---------------------------------
+
+  wndo run.here xterm
+
+Runs xterm in the current workspace. This function is primarily useful for
+custom key bindings to system commands.
+
+Starting in Another Workspace
+-----------------------------
+
+  wndo run.there xterm next
+
+Runs xterm in the next workspace.
+
+  wndo run.there xterm 3
+
+Runs xterm in workspace #3.
+
+Starting if not Already Running
+-------------------------------
+
+  wndo run.once xterm cls=xterm ws=3
+
+Runs xterm in workspace 3 if it's not already running in that workspace.
+
+To run Firefox in workspace 2 the first time you enter the workspace, and any
+time you reenter with it not running, add the following event binding.
+
+  wndo events.add workspace2 "run.once firefox cls=firefox-bin ws=2"
+
+Wndo-spy invokes "events.handle" with the "workspace2" event upon arrival in
+workspace #2. The "cls=firefox-bin" argument identifies a Firefox window by its
+WM_CLASS property.
+
+Killing Applications
+--------------------
+
+To kill an application by clicking on a window run the following command or use
+the default Super-KP_Delete key binding (Windows-Keypad-Delete).
+
+  wndo run.killwindow w=pick
+
+Use the following to kill all running xterm's.
+
+  wndo run.killwindow cls=xterm
+
+The following command violently kills all applications with window titles
+containing the text "Nasty Virus".
+
+  wndo run.killwindow sig=kill title="Nasty Virus"
+
+
+------------------------------
+ Accessing Help Documentation 
+------------------------------
+
+Help on Help
+------------
+
+Running "wndo" by itself or the following command will display a list of
+available help topics, including major topics, such as modules, functions, and
+other keywords.
+
+  wndo help
+
+Help on the "help" command/function is available.
+
+  wndo help help
+
+Topic Help
+----------
+
+As you can see there's a great deal of flexibility available for finding and
+presenting help. The keywords search for and load multiple help topics based on
+keywords embedded in the documentation. This tutorial is available via the
+command.
+
+  wndo help tutorial
+
+If you want a complete reference to all functions in html format run the
+following.
+
+  wndo help reference format=html output=ref.html
+
+
+-------------------------------
+ Developing a Simple Extension 
+-------------------------------
+
+Introduction
+------------
+
+Let's say you know a little about writing Python scripts, and you want to add
+some new features to Wndo. Specifically, you'd like to periodically display the
+current temperature. This section will walk you through the steps and present
+the code a block at a time. For now this tutorial and actual module code are the
+best developer resources, until developer reference and guide books exist.
+
+Creating the Script File
+------------------------
+
+You just need one file with a ".cmdo" extension placed in one of a few supported
+places ending in a wndo.d subdirectory. Determine the list of possible
+directories by running the following command.
+
+  wndo 'print CMDO.program.dirsScript'
+
+For this example create the module script file as "~/.wndo/wndo.d/weather.cmdo"
+to avoid potential permission issues with system directories. Load the file into
+your favorite text editor.
+
+The first line we'll add coaxes the editor into recognizing it as a Python file
+for syntax highlighting. You may need to reload or refresh to see a visible
+effect. While this in theory allows shell execution, running directly from the
+shell won't work due to special symbols only available when loaded by Wndo.
+We'll throw in a comment for good measure.
+
+  #!/usr/bin/env python
+  # My first Wndo extension for showing the temperature!
+
+Initialization - Configuration File and Globals
+-----------------------------------------------
+
+We need to import the "re" module for regular expression parsing of METAR data
+and the "urllib" module to download the data file.
+
+  import re
+  import urllib
+
+Saving the METAR station in a file eliminates the need to specify it each time
+the temperature is displayed. Configuration files are simple to use via a
+get/set API. Here we create a configuration access object. When the first data
+is saved the file "~/.wndo/weather.conf" will appear. It uses standard Python
+ConfigParser (INI file) format.
+
+  config = CMDO.config('weather')
+
+CMDO and WNDO Namespaces
+------------------------
+
+The runtime engine injects two special namespaces into the global symbols
+visible to modules, CMDO and WNDO. The former exposes the core engine's public
+variables, classes and functions. The latter similarly exposes application
+symbols. We already used this from the command line to display the module
+directory list.
+
+The only other global variable needed is the URL template for accessing METAR
+data. The station code will be injected before using the URL.
+
+  url = 'http://weather.noaa.gov/pub/data/observations/metar/stations/%s.TXT'
+
+Saving the METAR Station - the "set" Function
+---------------------------------------------
+
+Okay, here's where it gets a little unfamiliar. The Cmdo engine relies on
+"decorators" to declare functions available externally, i.e. from the command
+line. Decorators are a relatively new Python feature to support adding meta-data
+to function declarations. The "@CMDO.export" decorator both flags the function
+as externally visible and specifies argument types for validation and
+conversion. For simplicity this example avoids extended capabilities, like
+custom types, and optional or keyword arguments. The decorator also feeds into
+the help system, along with the "doc string" at the top of the function code.
+
+The following code declares the exported function and its one string argument,
+documents the argument and function, and implements saving to the configuration
+file. Note that set() takes a sction name, option name and the value and save()
+is required to write the data.
+
+  @CMDO.export(CMDO.String(desc='METAR station'))
+  def set(station):
+      'Set METAR station (see http://www.nws.noaa.gov/tg/siteloc.shtml).'
+      config.set('location', 'station', station)
+      config.save()
+
+You can now see your new module and function on the command line using the
+command "wndo help". The "weather" module should appear in the "Major Topics"
+list and "weather.set" should appear under "Functions". "wndo help weather"
+should show detailed help for the new module. A syntax error should show enough
+context to help you fix it.
+
+Displaying the Temperature - the "show" Function
+------------------------------------------------
+
+This function is simpler to declare, having no arguments, but more complicated
+to implement, given the need to access and parse METAR data on the Internet.
+Since the tutorial is more concerned about how to build a module, the
+implementation details concerning downloading and parsing won't be explained.
+It's simplistic, but should work in the U.S.. Similar code for other countries
+should be readily available. To test it just pick a random META code, e.g. KVUO,
+and it should work from anywhere.
+
+Note that the export decorator can appear without parentheses when no arguments
+are declared. The function starts by reading the station from the configuration
+file using config.get(). Then it fills out the URL and downloads and parses the
+data to calculate the temperature. Finally it displays the temperature on screen
+by invoking another Wndo function.
+
+  @CMDO.export
+  def show():
+      'Display current weather'
+      station = config.get('location', 'station')
+      reParse = re.compile('^%s [^ ]+ (AUTO)? [^ ]+ [^ ]+ [^ ]+ (M)?([0-9]+)/.*$' % station)
+      for line in urllib.urlopen(url % station):
+          m = reParse.match(line.strip())
+          if m is not None:
+              # Display farenheit temp. in top-left corner for 5 seconds.
+              if m.group(2) and m.group(2) == 'M':
+                  temp = -int(m.group(3)) * 9 / 5 + 32
+              else:
+                  temp = int(m.group(3)) * 9 / 5 + 32
+              WNDO.osd.display(str(temp), alignment=1, color='cyan', duration=5)
+              break
+
+The Complete Code
+-----------------
+
+  #!/usr/bin/env python
+  # My first Wndo extension for showing the temperature!
+
+  import re
+  import urllib
+
+  config = cmdo.config('weather')
+  url = 'http://weather.noaa.gov/pub/data/observations/metar/stations/%s.TXT'
+
+  @CMDO.export(CMDO.String(desc='METAR station'))
+  def set(station):
+      'Set METAR station (see http://www.nws.noaa.gov/tg/siteloc.shtml).'
+      config.set('location', 'station', station)
+      config.save()
+
+  @CMDO.export
+  def show():
+      'Display current weather'
+      station = config.get('location', 'station')
+      reParse = re.compile('^%s [^ ]+ (AUTO)? [^ ]+ [^ ]+ [^ ]+ (M)?([0-9]+)/.*$' % station)
+      for line in urllib.urlopen(url % station):
+          m = reParse.match(line.strip())
+          if m is not None:
+              # Display farenheit temp. in top-left corner for 5 seconds.
+              if m.group(2) and m.group(2) == 'M':
+                  temp = -int(m.group(3)) * 9 / 5 + 32
+              else:
+                  temp = int(m.group(3)) * 9 / 5 + 32
+              WNDO.osd.display(str(temp), alignment=1, color='cyan', duration=5)
+              break
+
+Not too bad, considering you get a command line interface, argument checking,
+on-demand loading, multi-format help, bash completion, and access to a function
+library almost for free!
+
+Testing Your Module
+-------------------
+
+Try getting module help. You should see complete information for the module and
+both functions.
+
+  wndo help weather
+
+Should display this.
+
+  ===== Wndo help weather =====
+
+
+  === Function: weather.set ===
+
+  Set METAR station (see http://www.nws.noaa.gov/tg/siteloc.shtml).
+
+  = Ordered Arguments =
+
+  1: METAR station
+
+
+  === Function: weather.show ===
+
+  Display current weather
+
+The next command formats help as HTML and loads it in your browser based on mime
+type assignments.
+
+  wndo help weather format=html view=yes
+
+Supported formats are "text" (the default), "html" and "xml".
+
+Now configure the METAR station. Go to the NOAA site
+(http://www.nws.noaa.gov/tg/siteloc.shtml) to find you station id (4 letter
+code) and run this command.
+
+  wndo weather.set <4 letter code>
+
+Verify that you now have a file "~/.wndo/weather.conf" and that it contains
+something like this.
+
+  [location]
+  station = <4 letter code>
+
+Manually display the temperature using this command.
+
+  wndo weather.show
+
+Display the temperature every hour by adding an event binding to "timer60", the
+60 minute heartbeat event from wndo-spy, e.g.
+
+  wndo events.add timer60 weather.show
+

@@ -1,0 +1,4 @@
+run.once: If the application is already running in another workspace, the
+app won't be started.
+
+run.once: Firefox detection by class is unreliable?

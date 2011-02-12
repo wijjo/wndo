@@ -1,0 +1,586 @@
+
+
++=============+
+| Wndo README |
++=============+
+
+
+---------
+ Summary 
+---------
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ Author     Steve Cooper <steve@wijjo.com>
+ License    GPL (http://www.gnu.org/licenses/gpl.txt) - see COPYING (1)(2)
+ Home Page  Wndo Home (http://wijjo.com/wndo/)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+1: Source code for wndo-spy inherits the X Consortium license from the original
+   xev source code. See license text later in this document and in the code.
+2: Source code for wndo-pick inherits an Open Group license from the original
+   xkill source code. See license text later in this document and in the code.
+
+
+---------
+ General 
+---------
+
+Introduction
+------------
+
+Wndo is a small suite of complementary tools for adding behavioral extensions to
+Gnome (http://www.gnome.org/), Xfce (http://www.xfce.org/), Fluxbox
+(http://www.fluxbox.org/), and other window managers. Wndo offers a plugin
+platform for tweaking the desktop environment. It focuses on modifying behavior,
+rather than adding desktop widgets. It has minimal dependencies, other than
+Python.
+
+Included modules handle window alignment, simple window tiling, process
+management, wallpaper management, and custom keyboard shortcuts. Wallpaper
+management capabilities include per-workspace and randomly-selected wallpaper.
+It performs its own key grabbing in order to avoid interaction and conflict with
+the equivalent window manager facility.
+
+Goals
+-----
+
+High priority goals are flexibility, extensibility, simple setup, and ease of
+use. Much lower priorities are a pretty GUI and a slick installation program.
+It's a building block, not a monolith.
+
+What's in it for end users?
+---------------------------
+
+End users benefit from added functionality in their favorite window manager.
+They also get a tool that will grow over time to include more and varied
+extensions.
+
+It's particularly interesting to users that switch window managers (WMs). Such
+users can bring their customized behaviors and keyboard shortcuts from one WM to
+the next without extensive reconfiguring. Just re-run "setup.activate" to
+activate Wndo in the new WM. In many cases you can get away with doing nothing
+to switch, e.g. for WMs that use the XDG "~/.config/autostart" directory and
+don't have a specialized way to configure wallpaper.
+
+What's in it for developers?
+----------------------------
+
+Developers get a simple platform for building window management extensions, one
+that isn't tied to a particular window manager. They work in a friendly and
+powerful high level language. Simply writing a new function produces a new
+command. The function decorator exports it, describes argument handling, and
+specifies help documentation. The end result is a full command line interface,
+help system, reference guide, etc.
+
+What's in it for the author?
+----------------------------
+
+I'm scratching an itch. The results are useful to me. Even if nobody else uses
+it, Wndo will remain an important component of my desktop environment.
+
+Wndo and Cmdo are part of an experimental application construction tool set and
+philosophy. Similar to many other development tools, the ultimate goal is to
+reduce or eliminate as many non-core development burdens as possible. Minimizing
+the demands of interface construction, help system maintenance, and
+documentation production allows greater focus on the real-world problems
+demanding your software solution.
+
+I personally find this a fun and easy way to build tools. Nothing would make me
+happier than to know I'm helping other people be more productive. I eagerly
+await your feedback to help me craft the tool YOU want. Are the notions useful,
+misguided, or do they need improvement? Thanks for at least checking it out!
+
+Feedback (Please...)
+--------------------
+
+This is the first Wndo release. A lot of work went into building a solid
+platform for developing window management extensions. A little less work went
+into the initial feature set. Despite being useful as is, the real hope is to
+receive feedback that leads to building more of the tools that people want and
+need.
+
+So please report problems (with as many details as you can provide), but also
+voice what would make this software more useful to you. Don't hesitate to ask,
+even if you have ideas that seem unrelated to the current feature set.
+
+How does it work?
+-----------------
+
+Features are packaged as modules containing exported functions. These functions
+can be used as commands from the command line. The commands also work well as
+key or menu bindings. The following example waits for you to click on a window
+and then moves and resizes the selected window to fill the left side of the
+screen. See the Tutorial for more examples.
+
+  wndo window.tile 1 3 w=pick
+
+Most features work with any window manager that is fully or mostly compatible
+with EWMH standards (http://standards.freedesktop.org/wm-spec/wm-spec-1.4.html)
+. Automatic user setup works with Gnome, Xfce and Fluxbox. It will also work for
+other window managers having similar configuration structure. User setup is
+limited to adding wndo-spy to the auto-start list and making other limited
+changes, if needed, to redirect wallpaper management through Wndo. The latter
+change is only required for Xfce.
+
+Wndo is built on top of Cmdo (http://wijjo.com/cmdo/) (pronounced "commando"), a
+Python facility that converts a set of "decorated" functions to a complete
+command-driven environment, with full help. See the required Cmdo package for
+more information.
+
+New features are easily added by placing modules into an appropriate directory.
+
+
+-------------
+ Terminology 
+-------------
+
+Cmdo module
+-----------
+
+A ".cmdo", ".cmdocore", or ".cmdodoc" file placed in a known location that adds
+functions and features or documentation available from the Wndo command line.
+Think of it as an ordinary Python module with some special shared functionality
+automatically injected through WNDO and CMDO namespaces. The phrase "Cmdo
+module" and the word "module" may be used interchangeably throughout this
+documentation. Python modules are distinguished by calling them "Python
+modules".
+
+Function
+--------
+
+A Python function exported from a Cmdo module available either as a Wndo command
+or to provide data to another function/command.
+
+Command
+-------
+
+An exported function that can be directly invoked from the Wndo command line.
+Non-command functions return data to be passed as arguments to command
+functions.
+
+
+----------------
+ Major Features 
+----------------
+
+Window Alignment and Tiling
+---------------------------
+
+The "window" module includes functions for moving windows to align a window's
+edges, corners or center to the screen's edges, corners or center. Automatic
+setup binds the keys Super-Keypad<1-9>(Windows-Keypad<1-9>) to the 9 screen
+locations described in:
+
+  wndo help window.align
+
+The "window" module also includes functions for fitting windows to an asymmetric
+grid, similar to a tiling window manager, like a poor man's ion3
+(http://modeemi.fi/~tuomov/ion/). Automatic setup binds the keys
+Super-Shift-Keypad<1-9>(Windows-Shift-Keypad<1-9>) to the tiling layout
+described in:
+
+  wndo help window.tile
+
+Workspace Management
+--------------------
+
+The "workspace" module provides various functions for changing the active
+workspace and for moving windows between workspaces. Automatic setup binds keys
+Ctrl-Alt-<left/right>to the previous/next active workspace and
+Ctrl-Alt-Shift-<left/right>to bringing the active window to the previous/next
+workspace. See:
+
+  wndo help workspace
+
+Workspace Wallpaper Management
+------------------------------
+
+The "wallpaper" module has functions to select random or specific wallpaper on a
+per-workspace basis. Automatic setup binds events from "wndo-spy" to wallpaper
+synchronization with workspace changes, selecting new wallpaper, and refreshing
+or randomly choosing the current workspace wallpaper. Current wallpaper
+selections are saved in the user configuration file "~/.wndo/wallpaper.conf".
+See:
+
+  wndo help wallpaper
+
+Workspace-Aware Application Launching
+-------------------------------------
+
+The "run" module has functions to launch applications with the additional
+capability to limit to a single instance or to launch in a particular workspace.
+See:
+
+  wndo help run
+
+Events and Key Grabbing
+-----------------------
+
+Wndo maintains a mapping of key and non-key events to actions. You can use it as
+a general purpose X hotkey facility by adding key events mapped to "run.here"
+commands. Key events are distinguished by a "key:" prefix. For example, to map
+Super+slash (Windows+slash) to xterm use the following command.
+
+  wndo events.add key key:Super+slash "run.once xterm"
+
+Wndo also supports limited key chaining. Automatic setup can optionally assign a
+"main key" used in front of all the generated bindings. So rather than using
+Super combined with keys on the numeric keypad, you can use something like
+Super+space followed by a naked numeric keypad key as a separate keystroke. The
+advantage is a smaller footprint in keyboard mapping space. The disadvantage is
+slightly more awkward key combinations.
+
+Check out the other functions in the events module for how to display event
+bindings or delete events and individual bindings.
+
+For more help see:
+
+  wndo help events
+
+Restarting wndo-spy after changing event bindings is unnecessary, since events
+get automatically reloaded after a short delay. Note that you may need to
+twiddle the mouse or keyboard before an X event allows Wndo-spy to check for
+changes.
+
+
+---------------------
+ Upgrading from Fbdo 
+---------------------
+
+Fbdo was renamed to Wndo once it achieved full and tested support for Gnome,
+Xfce, in addition to Fluxbox. It has always supported EWMH-compliant Window
+manager in theory. Removing the "fb" prefix distances it from Fluxbox as a
+primary target.
+
+Uninstalling Fbdo
+-----------------
+
+Given the name change and the much simpler, but different, installation, it is
+strongly recommended that you to a full uninstall of Fbdo. There are no known
+conflicts, but you don't need it, and it may cause confusion to have it around.
+
+See the uninstallation instructions in the Fbdo Install guide, although the
+instructions in this package should be similar, except for the name.
+
+Unfortunately minor configuration edits may be necessary to remove all traces of
+Fbdo. See the next couple of subsections for instructions appropriate to your
+window manager.
+
+Cleaning up Fluxbox changes
+---------------------------
+
+1: Edit "~/.fluxbox/keys" and remove the marked block of added key bindings.
+2: Edit "~/.fluxbox/startup" and remove the code to run fbspy.
+
+Cleaning up Xfce changes
+------------------------
+
+1: Delete "~/.config/fbspy.desktop" or use the Autostart settings panel to
+   remove fbspy.
+2: Use the Keyboard Settings panel to delete any Fbdo-related themes.
+
+
+------
+ Cmdo 
+------
+
+Cmdo (http://wijjo.com/cmdo/) ("commando") serves as the underlying engine. It
+supports the following general features.
+
+* Command line parsing, including both simplified single command and extended
+  multi-command forms.
+* Integrated help capable of text, HTML and XML formats.
+* Function invocation and argument checking/conversion.
+* Bash completion support, limited for now.
+* Prompted command input by preceding commands with "prompt".
+
+
+--------------
+ Key Bindings 
+--------------
+
+The following tables list bindings generated by fluxbox.setup or xfce.setup and
+some virtual keys available for user bindings. Names follow X11 standards, e.g.
+from X11/keysymdef.h. Note that the Mod4 and Super modifiers are typically the
+Windows key. Alt and Mod1 are also interchangeable. Key names starting with
+"KP_" are on the numeric keypad.
+
+Window Alignment Bindings (Default)
+-----------------------------------
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Key-           -Description-
+ Super+KP_Home   Align window to position 1 (top-left)
+ Super+KP_Up     Align window to position 2 (top-center)
+ Super+KP_Prior  Align window to position 3 (top-right)
+ Super+KP_Left   Align window to position 4 (middle-left)
+ Super+KP_Begin  Align window to position 5 (middle-center)
+ Super+KP_Right  Align window to position 6 (middle-right)
+ Super+KP_End    Align window to position 7 (bottom-left)
+ Super+KP_Down   Align window to position 8 (bottom-center)
+ Super+KP_Next   Align window to position 9 (bottom-right)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Window Tiling Bindings (Default)
+--------------------------------
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Key-                 -Description-
+ Super+Shift+KP_Home   Tile window from 1 to 1 (top-left corner)
+ Super+Shift+KP_Up     Tile window from 1 to 2 (top row)
+ Super+Shift+KP_Prior  Tile window from 2 to 2 (top-right corner)
+ Super+Shift+KP_Left   Tile window from 1 to 3 (left colum)
+ Super+Shift+KP_Begin  Tile window from 1 to 4 (full screen)
+ Super+Shift+KP_Right  Tile window from 2 to 4 (right column)
+ Super+Shift+KP_End    Tile window from 3 to 3 (bottom-left corner)
+ Super+Shift+KP_Down   Tile window from 3 to 4 (bottom row)
+ Super+Shift+KP_Next   Tile window from 4 to 4 (bottom-right corner)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Workspace Management Bindings (Default)
+---------------------------------------
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Key-                    -Description-
+ Control+Alt+Left         Switch to previous workspace
+ Control+Alt+Right        Switch to next workspace
+ Control+Alt+Shift-Left   Send window to previous workspace
+ Control+Alt+Shift-Right  Send window to next workspace
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Wallpaper Management Bindings (Default)
+---------------------------------------
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Key-              -Description-
+ Super+KP_Multiply  Select new wallpaper image (via dialog)
+ Super+KP_Divide    Reapply or randomize current wallpaper
+ Super+KP_Add       Increase current wallpaper rating
+ Super+KP_Subtract  Decrease current wallpaper rating
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+-----------------
+ Wndo-spy Events 
+-----------------
+
+The following lists events invoked by Wndo-spy. Manage assigned actions through
+the "events" module. You can test event handling by running "wndo events.handle
+<event name>", e.g. to test workspace change handling:
+
+  wndo events.handle workspace
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Event-     -Description-           -Default Action-
+ workspace   Workspace change (any)  Refresh wallpaper
+ workspace1  Workspace 1 change      (unassigned)
+ workspace2  Workspace 2 change      (unassigned)
+ workspace3  Workspace 3 change      (unassigned)
+ workspace4  Workspace 4 change      (unassigned)
+ workspace5  Workspace 5 change      (unassigned)
+ workspace6  Workspace 6 change      (unassigned)
+ workspace7  Workspace 7 change      (unassigned)
+ workspace8  Workspace 8 change      (unassigned)
+ workspace9  Workspace 9 change      (unassigned)
+ timer1      1 minute heartbeat      (unassigned)
+ timer5      5 minute heartbeat      (unassigned)
+ timer20     20 minute heartbeat     Choose random wallpaper
+ timer60     60 minute heartbeat     (unassigned)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+----------------------------
+ Extending (For Developers) 
+----------------------------
+
+New commands typically require just adding a single new Python function. The
+"@CMDO.export" function decorator specifies argument types for pre-validation
+and conversion. A Python doc string automatically becomes part of the integrated
+help system. See Tutorial and Cmdo documentation for more information.
+
+There's no current plugin repository, but there's little doubt that one will
+happen when demand exists and people start creating new plugins. In the
+meantime, if you create something you'd like to share please send an email and
+we'll find a way to share it.
+
+
+---------------------------
+ Relationship to Fluxspace 
+---------------------------
+
+Fluxspace (http://fluxspace.sourceforge.net/) is the author's previous
+fluxbox-related project. Wndo provides many of the same features, but has a
+completely different architecture, and little shared code.
+
+Wndo Advantages over Fluxspace
+------------------------------
+
+* Fewer dependencies
+* Easier installation
+* Greater flexibility
+* Greater extensibility
+* Lighter weight C-only background process for events
+
+Wndo Disadvantages
+------------------
+
+Wndo has more overhead for initiating a command, because it runs from scratch
+for each action. Fluxspace is always running (and consuming memory). This
+overhead will likely lessen in the future by running as a daemon process
+communicating through a channel like Dbus. Wndo also has the disadvantage of
+relying on external tools, e.g. xprop, to implement actions, the excuse/benefit
+being a reduction in build dependencies.
+
+
+------------------
+ Support Programs 
+------------------
+
+The following programs are small and simple C programs, all derived from
+existing common tools. The code is modified and included here for a few reasons.
+
+* To avoid external dependencies and possible breakage due to unexpected change.
+* To simplify the code and interface for the actual needs of Wndo.
+
+Since these tools are based on existing work their individual licensing choices
+are respected and preserved.
+
+Wndo-spy
+--------
+
+- - - - - - - - - - - - - - - - - - - - - - - - -
+ Author    Steve Cooper <steve@wijjo.com>
+ Based On  xev - part of X11 and Xorg
+ License   X Consortium license - see text below
+- - - - - - - - - - - - - - - - - - - - - - - - -
+
+Wndo-spy provides various hooks to support Wndo's deep customizations of Fluxbox
+and similar EWMH-compliant window managers.
+
+Converts X workspace switching events and timed heartbeats to Wndo events.
+
+Wndo-pick
+---------
+
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+ Author    Steve Cooper <steve@wijjo.com>
+ Based On  xkill
+ License   The Open Group license - see text below
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Provides a mouse cursor for selecting a window and emits the window id to
+stdout. Used by Wndo to allow user-chosen window actions.
+
+Wndo-ctrl
+---------
+
+- - - - - - - - - - - - - - - - - - - - - - 
+ Author    Steve Cooper <steve@wijjo.com>
+ Based On  wmctrl
+ License   GPL Version 2 - see COPYING
+- - - - - - - - - - - - - - - - - - - - - - 
+
+Manipulates windows and workspaces on behalf of Wndo.
+
+X Consortium License (for Wndo-spy)
+-----------------------------------
+
+  Permission is hereby granted, free of charge, to any person obtaining
+  a copy of this software and associated documentation files (the
+  "Software"), to deal in the Software without restriction, including
+  without limitation the rights to use, copy, modify, merge, publish,
+  distribute, sublicense, and/or sell copies of the Software, and to
+  permit persons to whom the Software is furnished to do so, subject to
+  the following conditions:
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR
+  OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  OTHER DEALINGS IN THE SOFTWARE.
+
+  Except as contained in this notice, the name of the X Consortium shall
+  not be used in advertising or otherwise to promote the sale, use or
+  other dealings in this Software without prior written authorization
+  from the X Consortium.
+
+The Open Group License (for Wndo-pick)
+--------------------------------------
+
+  Permission to use, copy, modify, distribute, and sell this software and its
+  documentation for any purpose is hereby granted without fee, provided that
+  the above copyright notice appear in all copies and that both that
+  copyright notice and this permission notice appear in supporting
+  documentation.
+
+  The above copyright notice and this permission notice shall be included
+  in all copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+  OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+  MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR
+  OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+  ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  OTHER DEALINGS IN THE SOFTWARE.
+
+  Except as contained in this notice, the name of The Open Group shall
+  not be used in advertising or otherwise to promote the sale, use or
+  other dealings in this Software without prior written authorization
+  from The Open Group.
+
+
+-----
+ FAQ 
+-----
+
+How can I see more verbose output from a failing command?
+---------------------------------------------------------
+
+Re-run the command from a terminal window with the "-v" option added before the
+command.
+
+Why are events broken?
+----------------------
+
+Wallpaper not responding to workspace changes and non-working keys is likely due
+to Wndo-spy not running. First check for a wndo-spy process. Bring up a
+graphical task manager and look for "wndo-spy" or run the following from a
+command line.
+
+  ps -e | grep wndo-spy
+
+Why isn't wallpaper displayed?
+------------------------------
+
+First check that Wndo-spy is running (see above). Then check that the
+wallpaper.apply command actually works. It may rely on broken external tools, or
+an internal error may be occurring. Try the following from the command line and
+look for errors.
+
+  wndo wallpaper.apply
+
+Why isn't there a GUI (graphical user interface)?
+-------------------------------------------------
+
+It's just a priority thing. Ultimately the intention is to generate GUIs from
+existing rich function meta-data. For now, the closest approximation is to use
+the "prompt" function. For example, to run setup activation with prompting:
+
+  wndo prompt setup.activate
+
+Why doesn't my application launch on another workspace with "run.there"?
+------------------------------------------------------------------------
+
+The "run.there" function relies on the window getting tagged with the PID
+(process id) of the process it spawned. Some programs, like "xcalc" don't mark
+the window with the PID. Other programs, like Xfce's "thunar", manage processes
+in a more complex way. The process started isn't necessarily the process that
+ends up running the window. We're quite open to suggestions for a more reliable
+mechanism.
+

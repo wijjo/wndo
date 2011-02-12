@@ -1,0 +1,32 @@
+#!/bin/sh
+
+abort()
+{
+    echo "<abort>"
+    echo "===== Error Log (make-release.err) ====="
+    test -f make-release.err && cat make-release.err
+    echo ""
+    exit 1
+}
+
+run()
+{
+    echo ":::Run::: \"$*\"" | tee -a make-release.log | tee -a make-release.err
+    ($* 2>> make-release.err >> make-release.log) || abort
+}
+
+test -f make-release.log && rm make-release.log
+test -f make-release.err && rm make-release.err
+
+test -f Makefile && run sudo make distclean
+run sudo debian/rules clean
+run ./autogen.sh
+run ./configure
+run make dist
+run make dist-gzip
+run mv wndo-*.tar.gz ..
+run mv wndo-*.tar.bz2 ..
+run make distclean
+run fakeroot debian/rules clean
+run fakeroot debian/rules binary
+run fakeroot debian/rules clean

@@ -1,0 +1,125 @@
+#===============================================================================
+#===============================================================================
+# run module for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os
+import time
+
+#===============================================================================
+
+@CMDO.export(CMDO.Command, title = WNDO.Title, cls = WNDO.ClassName, ws = WNDO.Workspace)
+def once(command, title = None, cls = None, ws = None):
+    '''\
+Run command.  Don't run if a window matching all specified title, cls,
+and workspace criteria exists.'''
+    if title is not None or cls is not None:
+        windows = WNDO.window.search(title = title, cls = cls, ws = ws)
+    else:
+        windows = []
+    if windows:
+        CMDO.info('"%s" is already running' % command)
+    else:
+        if ws is None:
+            here(command)
+        else:
+            there(command, ws)
+
+#===============================================================================
+
+@CMDO.export(CMDO.Command)
+def here(command):
+    '''Run command in current workspace.'''
+    CMDO.info('Spawning "%s"...' % command)
+    pid = CMDO.spawn(command)
+    CMDO.info('   PID=%d' % pid)
+
+#===============================================================================
+
+@CMDO.export(CMDO.Command, WNDO.Workspace)
+def there(command, ws):
+    '''Run command in another workspace.'''
+    CMDO.info('Spawning "%s" in workspace %s...' % (command, ws))
+    pid = CMDO.spawn(command)
+    wRoot = WNDO.WMRootWindow.get()
+    if ws and ws != wRoot.workspace:
+        CMDO.info('Waiting for window with PID=%d' % pid)
+        for i in range(10):
+            time.sleep(.5)
+            CMDO.info('...')
+            wFound = []
+            for w in WNDO.window.search(prc = pid):
+                if w.widClientLeader:
+                    CMDO.info('Found wid=%s client leader=%s' % (w.wid, w.widClientLeader))
+                    WNDO.workspace.send(ws, w=w)
+                    return
+        CMDO.warning('Gave up waiting for window')
+
+#===============================================================================
+
+@CMDO.export(
+    sig   = WNDO.Signal(valueDef = 'TERM'),
+    w     = WNDO.Window,
+    title = WNDO.Title,
+    cls   = WNDO.ClassName,
+    ws    = WNDO.Workspace
+)
+def killwindow(sig = None, w = None, title = None, cls = None, ws = None):
+    '''Terminate or signal process(es) based on specified window(s).  Must
+    provide at least one keyword argument.'''
+    if w is None and title is None and cls is None and ws is None:
+        CMDO.error('\
+Must specify window ("w="), title ("title="), class ("cls=") or workspace ("ws=").')
+    else:
+        windows = []
+        if w:
+            windows.append(w)
+        if title is not None or cls is not None or ws is not None:
+            windows.extend(WNDO.window.search(title = title, cls = cls, ws = ws))
+        nKilled = 0
+        for window in windows:
+            if window.pid:
+                CMDO.info('Killing process %d' % window.pid)
+                os.kill(window.pid, sig)
+                nKilled += 1
+        if nKilled == 0:
+            if windows:
+                CMDO.warning('Nothing killed - %d window(s) found, but none with process ID.'
+                                % len(windows))
+            else:
+                CMDO.warning('Nothing killed - no windows found.')
+
+#===============================================================================
+
+@CMDO.export(
+    WNDO.Process(True),    # True => allow multiple
+    sig = WNDO.Signal(valueDef = 'TERM'),
+)
+def killall(pids, sig = None):
+    '''Terminate or signal process(es) based on PID or regular expression.'''
+    nKilled = 0
+    for pid in pids:
+        CMDO.info('Killing process %d' % pid)
+        os.kill(pid, sig)
+        nKilled += 1
+    if nKilled == 0:
+        CMDO.warning('Nothing killed - no matching running process.')
+
+# vim: filetype=python

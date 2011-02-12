@@ -1,0 +1,21 @@
+Source: wndo
+Section: x11
+Priority: optional
+Maintainer: Steve Cooper <steve@wijjo.com>
+Build-Depends: debhelper (>= 4.0.0), pkg-config, libx11-dev
+Standards-Version: 3.6.1.0
+
+Package: wndo
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, xprop, xwininfo, python-cmdo
+Recommends: fluxbox
+Suggests: python-osd, eterm
+Replaces: xbase-clients (<< 6.8.2-38)
+Description: Behavioral extensions for fluxbox, xfce and other wms
+ wndo is a small suite of complementary tools for behavioral extensions to
+ Gnome, Xfce, Fluxbox, and other light-weight window managers.  Wndo offers a
+ plugin platform for tweaking the desktop environment.  It modifies behavior,
+ rather than adding desktop widgets.  It has minimal dependencies beyond
+ Python.  Included modules handle window alignment and tiling, process
+ management, and wallpaper management, including per-workspace wallpaper and
+ random wallpaper changing.

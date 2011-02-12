@@ -1,0 +1,1011 @@
+
+
++=====================+
+| Wndo help reference |
++=====================+
+
+
+----------------
+ Module: (core) 
+----------------
+
+Function: checkInstall()
+------------------------
+
+Validate installation by checking dependencies.
+
+Function: normalizeKey(s)
+-------------------------
+
+Standardize keyboard key and modifier names and order them for consistency.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ s        key string
+- - - - - - - - - - - - - 
+
+
+----------------
+ Module: events 
+----------------
+
+Function: events.add(event, action)
+-----------------------------------
+
+Add command binding to named event.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - -
+ -Label-  -Description-
+ event    event name
+ action   action command
+- - - - - - - - - - - - -
+
+Function: events.clear(event)
+-----------------------------
+
+Clear all event actions.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ event    event name
+- - - - - - - - - - - - - 
+
+Function: events.delete(event, *idx)
+------------------------------------
+
+Delete specific event action(s).
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-                     -Description-
+ event                       event name
+ <0-n of: action index> ...  (variable argument list)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: events.find(event=?, action=?)
+----------------------------------------
+
+Find event/index/action triplets matching event and or action patterns.
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ action     action string pattern (default = all)
+ event      event name pattern (default = all)
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: events.handle(event)
+------------------------------
+
+Handle a named event by looking up and invoking assigned action(s).
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ event    event name
+- - - - - - - - - - - - - 
+
+Function: events.mainkey()
+--------------------------
+
+Function: events.purge(event=?, action=?)
+-----------------------------------------
+
+Find and purge by event/action pattern(s). Patterns support full regular
+expression syntax. Return dictionary mapping event names to lists of objects
+with "idx" and "action" members.
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ action     action string pattern (default = all)
+ event      event name pattern (default = all)
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: events.show(eventPat)
+-------------------------------
+
+List actions for event pattern.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-   -Description-
+ eventPat  event name pattern (default = all) [o]
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+[o]=optional
+
+
+-------------
+ Module: osd 
+-------------
+
+Function: osd.display(s, alignment=?, font=?, color=?, duration=?)
+------------------------------------------------------------------
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ s        string
+- - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ alignment  alignment # (default = 5)
+ color      string (default = yellow)
+ duration   integer (default = 2)
+ font       string (default = lucidasans-bold-24)
+- - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+-------------
+ Module: run 
+-------------
+
+Function: run.here(command)
+---------------------------
+
+Run command in current workspace.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ command  command
+- - - - - - - - - - - - - 
+
+Function: run.killall(pids, sig=?)
+----------------------------------
+
+Terminate or signal process(es) based on PID or regular expression.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - -
+ -Label-  -Description-
+ pids     process id or name pattern
+- - - - - - - - - - - - - - - - - - -
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ sig        Signal number/name.  See "man 7 signal" or "man kill". (default = TERM)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: run.killwindow(sig=?, w=?, title=?, cls=?, ws=?)
+----------------------------------------------------------
+
+Terminate or signal process(es) based on specified window(s). Must provide at
+least one keyword argument.
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ cls        window class name
+ sig        Signal number/name.  See "man 7 signal" or "man kill". (default = TERM)
+ title      window title pattern
+ w          window id (hex 0xnnn...), window object or "pick"
+ ws         workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: run.once(command, title=?, cls=?, ws=?)
+-------------------------------------------------
+
+Run command. Don't run if a window matching all specified title, cls, and
+workspace criteria exists.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ command  command
+- - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ cls        window class name
+ title      window title pattern
+ ws         workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: run.there(command, ws)
+--------------------------------
+
+Run command in another workspace.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ command  command
+ ws       workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+---------------
+ Module: setup 
+---------------
+
+Function: setup.activate(features=?, interval=?, autostart=?, key=?)
+--------------------------------------------------------------------
+
+Activate user features by surgically updating configuration.
+
+Checks prerequisites and sets up events. The features argument indicates which
+event bindings to create. Pre-existing bindings for unwanted features are not
+removed.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Feature-  -Description-
+ align      Window alignment keys
+ tile       Window tiling keys
+ wallpaper  Automatic wallpaper changing and support keys
+ workspace  Workspace switching keys
+ other      Other actions, like kill window
+ all        All features
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-
+   -Description-
+ autostart
+   add to autostart programs (default = True)
+ features
+   comma-separated features (align|tile|wallpaper|workspace|other|all) (default = all)
+ interval
+   random wallpaper changing interval (default = 20)
+ key
+   prefix key string or "direct" for direct keystrokes (default = direct)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Function: setup.clean()
+-----------------------
+
+Thoroughly clean all user configuration.
+
+Function: setup.deactivate()
+----------------------------
+
+Deactivate user features.
+
+Function: setup.reactivate()
+----------------------------
+
+Reactive previously-selected user features.
+
+
+-------------------
+ Module: wallpaper 
+-------------------
+
+This module implements various desktop wallpaper manipulations.
+
+Function: wallpaper.apply(randomize=?, report=?, display=?)
+-----------------------------------------------------------
+
+Apply saved wallpaper to current workspace. When saved wallpaper image path is a
+directory chooses a random image from that directory.
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ display    X display
+ randomize  select new random wallpaper (default = False)
+ report     report change on-screen (default = False)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: wallpaper.rate(delta=?)
+---------------------------------
+
+Increase or decrease the current wallpaper image's rating in order to influence
+how often it gets randomly selected.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ delta    integer (default = 1) [o]
+- - - - - - - - - - - - - - - - - - - 
+
+[o]=optional
+
+Function: wallpaper.select()
+----------------------------
+
+If zenity is available brings up a dialog to pick a wallpaper image file. Starts
+from the last visited directory.
+
+Function: wallpaper.set(path, treatment=?, display=?)
+-----------------------------------------------------
+
+Set wallpaper using an optional treatment. Can specify either a single image
+file or a directory from which to choose a random image. Saves settings for
+current workspace to configuration file for use by wallpaper_apply().
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ path     image file or directory
+- - - - - - - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ display    X display
+ treatment  wallpaper treatment (tile*|center|maxspect|scale) (default = tile)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+----------------
+ Module: window 
+----------------
+
+Function: window.active()
+-------------------------
+
+Get active window for passing to window functions. Normally unnecessary, given
+that window arguments default to the active window.
+
+Function: window.align(alignment, w=?)
+--------------------------------------
+
+Align window to position # 1-9 (shown below) without resizing. Left, center or
+right alignments apply to the left edge, center or right edge of the window.
+Top, middle or bottom alignments apply to the top edge, middle or bottom edge of
+the window. Defaults to active window.
+
+  1-----+--2--+-----3
+  |     |     |     |
+  +-----+-----+-----+
+  4     |  5  |     6
+  +-----+-----+-----+
+  |     |     |     |
+  7-----+--8--+-----9
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - 
+ -Label-    -Description-
+ alignment  alignment #
+- - - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ w          window id (hex 0xnnn...), window object or "pick" (default = active)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Function: window.move(x, y, w=?)
+--------------------------------
+
+Move window to coordinates (x, y). Limited to visible work area. Defaults to
+active window.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - 
+ -Label-  -Description-
+ x        integer
+ y        integer
+- - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ w          window id (hex 0xnnn...), window object or "pick" (default = active)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Function: window.pick()
+-----------------------
+
+Get user-picked window for passing to window functions. Normally unnecessary,
+given that window arguments set to "pick" perform the same function.
+
+Function: window.root()
+-----------------------
+
+Get root window for passing to window functions. Note that many functions are
+inappropriate for the root window, e.g. move().
+
+Function: window.search(title=?, cls=?, ws=?, prc=?)
+----------------------------------------------------
+
+Return a list of matching window objects for given title, class name, workspace,
+and or process (id) criteria. Title accepts regular expressions. Can use results
+in a for...in loop to call window-related functions.
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Keyword-  -Description-
+ cls        window class name
+ prc        process id or name pattern
+ title      window title pattern
+ ws         workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Function: window.show(w=?)
+--------------------------
+
+Display window position and size properties. Defaults to active window.
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ w          window id (hex 0xnnn...), window object or "pick" (default = active)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Function: window.tile(tile1, tile2, w=?)
+----------------------------------------
+
+Resize and move window to fill rectangle enclosed by two tile # arguments.
+Asymmetrical tiling grid (shown below) has larger left column and top row.
+Defaults to active window.
+
+  +---------+-----+
+  |         |     |
+  |    1    |  2  |
+  |         |     |
+  +---------+-----+
+  |    3    |  4  |
+  +---------+-----+
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ tile1    from tile #
+ tile2    to tile # (default = from tile #) [o]
+- - - - - - - - - - - - - - - - - - - - - - - - - 
+
+[o]=optional
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ w          window id (hex 0xnnn...), window object or "pick" (default = active)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+-------------------
+ Module: workspace 
+-------------------
+
+Function: workspace.bring(ws, w=?)
+----------------------------------
+
+Bring window to another workspace # and switch to that workspace. Specify "next"
+or "previous" to bring to the next or previous workspace. Defaults to active
+window.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ ws       workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ w          window id (hex 0xnnn...), window object or "pick" (default = active)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Function: workspace.report()
+----------------------------
+
+Report current workspace using on-screen display (OSD). Requires "osd_cat" in
+the path.
+
+Function: workspace.send(ws, w=?)
+---------------------------------
+
+Send window to another workspace # or name, but stay on the current workspace.
+Specify "next" or "previous" to send to the next or previous workspace. Defaults
+to active window.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ ws       workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+= Keyword Arguments (Optional) =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ -Keyword-  -Description-
+ w          window id (hex 0xnnn...), window object or "pick" (default = active)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Function: workspace.switch(ws)
+------------------------------
+
+Switch to another workspace #. Pass "next" or previous" to switch to the next or
+previous workspace.
+
+= Ordered Arguments =
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ -Label-  -Description-
+ ws       workspace # (1-n), name, "current", "next", or "previous"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+----------------
+ CMDO Namespace 
+----------------
+
+CMDO Core Classes
+-----------------
+
+= CMDO.ExcArgument =
+
+Argument processing exception
+
+= CMDO.ExcBase =
+
+Base exception class
+
+= CMDO.ExcConversion =
+
+Argument conversion exception
+
+= CMDO.ExcDoc =
+
+Documentation exception
+
+= CMDO.ExcFunction =
+
+Exported function exception
+
+= CMDO.ExcLoad =
+
+Load-time exception
+
+= CMDO.ExcPath =
+
+File or directory exception
+
+= CMDO.ExcQuit =
+
+Application termination exception
+
+= CMDO.ExportedClass =
+
+Base class for classes exported from module files
+
+= CMDO.More =
+
+Special type for accepting a variable quantity of additional arguments. Optional
+arguments specify a validation type ("type"), a minimum quantity ("countMin"), a
+maximum quantity ("countMax"), and a description ("desc").
+
+= CMDO.TypeBase =
+
+Base argument type class
+
+CMDO Core Functions
+-------------------
+
+= CMDO.abort(*msgs) =
+
+Display error message(s) and quit (violently)
+
+= CMDO.block(label, indent, border, *msgs) =
+
+Display message(s) with label, border and indentation.
+
+= CMDO.config(name, caseSensitive = False) =
+
+Returns a configuration object for accessing a configuration file in the
+application home directory.
+
+= CMDO.confirm(*msgs) =
+
+Display message(s) and return True if user said "yes".
+
+= CMDO.docParse(path) =
+
+Parses structured text documentation in a file and returns the root node.
+
+= CMDO.docParseString(s) =
+
+Parses structured text documentation in a string and returns the root node.
+
+= CMDO.error(*msgs) =
+
+Display error message(s)
+
+= CMDO.execute(s) =
+
+Executes a string as one or more commands by using smart command parsing to
+detect and handle simplified syntax, if used.
+
+= CMDO.findProgram(*names) =
+
+Returns first occurance of program name(s) in the system path.
+
+= CMDO.getFunction(s) =
+
+Converts function name to Function object.
+
+= CMDO.getVersionedPath(path, suffix) =
+
+Convert path to versioned path by adding suffix and counter when necessary.
+
+= CMDO.glob(pathname) =
+
+Return a list of paths matching a pathname pattern. The pattern may contain
+simple shell-style wildcards a la fnmatch.
+
+= CMDO.info(*msgs) =
+
+Display message(s)
+
+= CMDO.isString(o) =
+
+Returns True if the argument is a string type.
+
+= CMDO.message(label, indent, *msgs) =
+
+Display message(s) with label and indentation.
+
+= CMDO.prompt(pmsg, isvalid = None, fixer = None, msgs = []) =
+
+Display message(s) and request response.
+
+= CMDO.purgeVersions(path, suffix, nKeep, reverse = False) =
+
+Purge file versions created by getVersionedPath. Purge specified quantity in
+normal or reverse sequence.
+
+= CMDO.quit(*msgs) =
+
+Display message(s) and quit (normally)
+
+= CMDO.registerGUI(name, cls) =
+
+Register GUI name and class.
+
+= CMDO.registerPublisher(name, cls) =
+
+Register documentation publisher name and class.
+
+= CMDO.sortedIter(seq) =
+
+Iterates sequence object in alphabetical order.
+
+= CMDO.spawn(command) =
+
+Spawns a command process. Returns the process ID (PID).
+
+= CMDO.textFormatPlain(text, indent, width = 0) =
+
+Returns lines split by linefeeds, indented and wrapped to an optional width.
+Arguments are (text, indent and width (defaults to 0).
+
+= CMDO.textFormatWrapped(text, indent, prefix, width) =
+
+Returns word-wrapped text lines using indentation, a line prefix, and a maximum
+width. Arguments are (text, indent, prefix, width).
+
+= CMDO.warning(*msgs) =
+
+Display warning message(s)
+
+CMDO Core Variables
+-------------------
+
+= CMDO.debug =
+
+Display debugging messages if True
+
+= CMDO.engine =
+
+Engine object
+
+= CMDO.extConfig =
+
+Configuration file extension, including leading "."
+
+= CMDO.extCore =
+
+Core module file extension, including leading "."
+
+= CMDO.extDoc =
+
+Documentation module file extension, including leading "."
+
+= CMDO.extModule =
+
+Module file extension, including leading "."
+
+= CMDO.guis =
+
+Dictionary of available GUIs
+
+= CMDO.maxTracebackLines =
+
+(undocumented int)
+
+= CMDO.maxWidth =
+
+(undocumented int)
+
+= CMDO.maxint =
+
+(undocumented int)
+
+= CMDO.program =
+
+Application object
+
+= CMDO.publishers =
+
+Dictionary of available formats/publishers
+
+= CMDO.reKwarg =
+
+(undocumented SRE_Pattern)
+
+= CMDO.reNum =
+
+(undocumented SRE_Pattern)
+
+= CMDO.reSym =
+
+(undocumented SRE_Pattern)
+
+= CMDO.verbose =
+
+Display verbose messages if True
+
+CMDO Exported Types
+-------------------
+
+= CMDO.Boolean =
+
+A true/false value. Interprets (case-insensitive) "true"/"false", "yes"/"no",
+and zero/non-zero.
+
+= CMDO.Command =
+
+An unchecked path string.
+
+= CMDO.Enum =
+
+Enumerated value from a list of possible values.
+
+= CMDO.Function =
+
+A named function.
+
+= CMDO.GUI =
+
+GUI driver.
+
+= CMDO.Integer =
+
+An integer number.
+
+= CMDO.Path =
+
+An unchecked path string.
+
+= CMDO.PathFile =
+
+A path to an existing file.
+
+= CMDO.Publisher =
+
+Publication format, e.g. "text", "html" or "xml".
+
+= CMDO.RegExp =
+
+A regular expression for searches.
+
+= CMDO.String =
+
+A text string.
+
+= CMDO.TagList =
+
+A comma-separated tag list.
+
+= CMDO.URL =
+
+An unchecked URL string.
+
+
+----------------
+ WNDO Namespace 
+----------------
+
+WNDO Exported Types
+-------------------
+
+= WNDO.Action =
+
+Event action string with function call and arguments.
+
+= WNDO.ActionIndex =
+
+Integer index specifying a particular action for an event. Actions are deleted
+by index.
+
+= WNDO.ActionPattern =
+
+Regular expression for finding one or more event actions.
+
+= WNDO.Alignment =
+
+A screen alignment between 1 and 9
+
+= WNDO.Bindings =
+
+Default key binding descriptions, commands, and keys by feature.
+
+= WNDO.ClassName =
+
+Window class name
+
+= WNDO.Coordinate =
+
+An X Window coordinate value
+
+= WNDO.Display =
+
+X Display
+
+= WNDO.Event =
+
+Event tag, optionally prefixed with "key:" for keyboard events.
+
+= WNDO.EventPattern =
+
+Regular expression for finding one or more events.
+
+= WNDO.ExcAlignment =
+
+Window alignment exception
+
+= WNDO.ExcHeartbeat =
+
+Heartbeat interval exception
+
+= WNDO.ExcOSD =
+
+On-screen display exception
+
+= WNDO.ExcProcess =
+
+Process management exception
+
+= WNDO.ExcRoot =
+
+Root window access exception
+
+= WNDO.ExcSetup =
+
+Setup operation exception
+
+= WNDO.ExcSignal =
+
+Signal argument exception
+
+= WNDO.ExcTile =
+
+Window tiling exception
+
+= WNDO.ExcWallpaper =
+
+Wallpaper management exception
+
+= WNDO.ExcWindow =
+
+Window management exception
+
+= WNDO.ExcWorkspace =
+
+Workspace management exception
+
+= WNDO.ExcXMLTweak =
+
+XML tweaking exception
+
+= WNDO.FeatureList =
+
+Indicates which features to set up with key bindings, etc. Returns a list of
+feature objects.
+
+= WNDO.Features =
+
+Comma-separated list of feature names or "all" for all features.
+
+= WNDO.Heartbeat =
+
+A heartbeat event interval. Zero disables the interval.
+
+= WNDO.Process =
+
+A process identified by PID or regular expression
+
+= WNDO.Signal =
+
+A system signal for killing or interrupting processes
+
+= WNDO.Tile =
+
+A screen tile position between 1 and 4
+
+= WNDO.TileFrom =
+
+Starting tile #
+
+= WNDO.TileTo =
+
+Ending tile #
+
+= WNDO.Title =
+
+Window title pattern
+
+= WNDO.WMRootWindow =
+
+Root window class with properties
+
+= WNDO.WMWindow =
+
+Window class with properties
+
+= WNDO.WallpaperTreatment =
+
+A wallpaper treatment for applying an image to the desktop
+
+= WNDO.Window =
+
+A Window argument must be a hex window id (as used by xwininfo, xprop and
+others), e.g. 0x12345678 or a WMWindow object. WMWindow objects are provided by
+functions like window_active(), window_root() or window_search().
+
+= WNDO.Workspace =
+
+Workspace argument type
+
+= WNDO.XMLConfig =
+
+Provides read/write access to an XML configuration file with given indentation,
+node ordering, and file name suffix. If backup is a string, e.g. '~', that
+string is appended to the file name. If backup is a number (n), n backup copies
+are maintained with the suffix and "-###" inserted before the extension. If
+reverse is True then new files get the versioned name.
+

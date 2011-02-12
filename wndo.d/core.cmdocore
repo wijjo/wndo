@@ -1,0 +1,1211 @@
+#===============================================================================
+#===============================================================================
+# core classes and functions for Wndo
+#
+# Copyright (c) 2007 Steve Cooper, steve@wijjo.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#===============================================================================
+#===============================================================================
+
+import os, os.path
+import re
+import signal
+import glob
+import xml.sax
+import shutil
+import copy
+
+
+#===============================================================================
+
+class Binding(object):
+    def __init__(self, desc, keys, cmds):
+        self.desc = desc
+        self.keys = keys
+        self.cmds = cmds
+
+
+#===============================================================================
+
+class Bindings(CMDO.ExportedClass):
+
+    '''Default key binding descriptions, commands, and keys by feature.'''
+
+    class Set(object):
+        def __init__(self, desc, mods, purge, *items):
+            self.desc = desc
+            if CMDO.isString(mods):
+                self.mods = [mods]
+            else:
+                self.mods = list(mods)
+            self.purge = purge
+            self.bindings = []
+            for item in items:
+                desc = item[0]
+                if CMDO.isString(item[1]):
+                    keys = [item[1]]
+                else:
+                    keys = list(item[1])
+                cmds = item[2:]
+                self.bindings.append(Binding(desc, keys, cmds))
+
+    # Window alignment (1-9) key bindings
+    align = Set(
+        'window alignment keys',
+        'Super',
+        'window[.]align.*',
+        ('Align top-left',      'KP_Home',  "window.align 1"),
+        ('Align top-center',    'KP_Up',    "window.align 2"),
+        ('Align top-right',     'KP_Prior', "window.align 3"),
+        ('Align middle-left',   'KP_Left',  "window.align 4"),
+        ('Align middle-center', 'KP_Begin', "window.align 5"),
+        ('Align middle-left',   'KP_Right', "window.align 6"),
+        ('Align bottom-left',   'KP_End',   "window.align 7"),
+        ('Align bottom-center', 'KP_Down',  "window.align 8"),
+        ('Align bottom-right',  'KP_Next',  "window.align 9"),
+    )
+
+    # Tiling (from, to)
+    tile = Set(
+        'window tiling keys',
+        'Super',
+        'window[.]tile.*',
+        ('Fill top-left tile',       ('Shift', 'KP_Home'),  "window.tile 1 1"),
+        ('Fill top (full width)',    ('Shift', 'KP_Up'),    "window.tile 1 2"),
+        ('Fill top-right tile',      ('Shift', 'KP_Prior'), "window.tile 2 2"),
+        ('Fill left (full height)',  ('Shift', 'KP_Left'),  "window.tile 1 3"),
+        ('Fill screen',              ('Shift', 'KP_Begin'), "window.tile 1 4"),
+        ('Fill right (full height)', ('Shift', 'KP_Right'), "window.tile 2 4"),
+        ('Fill bottom-left tile',    ('Shift', 'KP_End'),   "window.tile 3 3"),
+        ('Fill bottom (full width)', ('Shift', 'KP_Down'),  "window.tile 3 4"),
+        ('Fill bottom-right tile',   ('Shift', 'KP_Next'),  "window.tile 4 4"),
+    )
+
+    wallpaper = Set(
+        'wallpaper management keys',
+        'Super',
+        'wallpaper[.].*',
+        ('Wallpaper rating +', 'KP_Add',      "wallpaper.rate +1"),
+        ('wallpaper rating -', 'KP_Subtract', "wallpaper.rate -1"),
+        ('Select wallpaper',   'KP_Multiply', "wallpaper.select"),
+        ('Re-apply wallpaper', 'KP_Divide',   "wallpaper.apply randomize=yes"),
+    )
+
+    workspace = Set(
+        'workspace switching keys',
+        ('Alt', 'Control'),
+        'workspace[.].*',
+        ('Switch to next workspace',     'Right',            "workspace.switch next"),
+        ('Switch to previous workspace', 'Left',             "workspace.switch previous"),
+        ('Window to next workspace',     ('Shift', 'Right'), "workspace.bring next"),
+        ('Window to previous workspace', ('Shift', 'Left'),  "workspace.bring previous"),
+    )
+
+    other = Set(
+        'other keys',
+        'Super',
+        'run[.]killwindow.*',
+        ('Kill window', 'KP_Delete', "run.killwindow w=pick"),
+    )
+
+
+#===============================================================================
+
+class Features(CMDO.ExportedClass):
+    '''Comma-separated list of feature names or "all" for all features.'''
+    class Feature:
+        def __init__(self, name, desc, *deps):
+            self.name = name
+            self.desc = desc
+            self.deps = deps
+        def __cmp__(self, other):
+            if isinstance(other, Features.Feature):
+                return cmp(self.name, other.name)
+            return cmp(self.name, other)
+    class FeatureSet:
+        def __init__(self, names = ['all']):
+            self.features = {}
+            self._addNames(names)
+        def iterSet(self):
+            for feature in Features.all:
+                if feature.name in self.features:
+                    yield self.features[feature.name]
+        def get(self, name):
+            return self.features.get(name, None)
+        def has(self, *names):
+            for name in names:
+                if name not in self.features:
+                    return False
+            return True
+        def hasAny(self, *names):
+            for name in names:
+                if name in self.features:
+                    return True
+            return False
+        def _addNames(self, names):
+            for name in names:
+                if name not in self.features and name in Features.all:
+                    self.features[name] = Features.all[list(Features.all).index(name)]
+                    self._addNames(self.features[name].deps)
+        def iterBindingSets(self, *features):
+            if not features:
+                features = self.features
+            for feature in features:
+                if hasattr(Bindings, feature):
+                    bindingSet = getattr(Bindings, feature)
+                    if bindingSet:
+                        yield bindingSet
+        def iterBindings(self, *features):
+            for bindingSet in self.iterBindingSets(*features):
+                for binding in bindingSet.bindings:
+                    yield binding
+
+    all = (
+        Feature('align',     'Window alignment keys'),
+        Feature('tile',      'Window tiling keys'),
+        Feature('wallpaper', 'Automatic wallpaper changing and support keys'),
+        Feature('workspace', 'Workspace switching keys'),
+        Feature('other',     'Other actions, like kill window'),
+        Feature('all',       'All features', 'align', 'tile', 'wallpaper', 'workspace', 'other'),
+    )
+    @staticmethod
+    def getSet(names):
+        return Features.FeatureSet(names)
+
+
+#===============================================================================
+
+class StringDict(dict):
+    '''\
+Subclasses dict to always provide a string, to masquerate items as
+attributes, and to automatically remove empty items.  I.e. can use the item
+named "a" in the StringDict named "d" as follows.
+
+Get string value, whether or not it was previously set:
+    d.a
+    d["a"]
+
+Set value to "c", whether or not it was previously set:
+    d.a = "c"
+    d["a"] = "c"
+
+Delete item, whether or not it was previously set:
+    d.a = None
+    d["a"] = None
+    d.a = ""
+    d["a"] = ""
+
+The "del" statement should also work, but only if the key exists.
+'''
+
+    def __init__(self, **kwargs):
+        dict.__init__(self)
+        for kw in kwargs:
+            self[kw] = kwargs[kw]
+
+    def __setattr__(self, name, value):
+        if value is None or not str(value):
+            if self.has_key(name):
+                del self[name]
+        else:
+            self[name] = value
+
+    def __getattr__(self, name):
+        return self[name]
+
+    def __getitem__(self, name):
+        return self.get(name, '')
+
+
+#===============================================================================
+
+class _Node(object):
+
+    def __init__(self, name, attr):
+        self.name     = name
+        self.attr     = StringDict(**attr)
+        self.parent   = None
+        self.children = []
+
+    def add(self, name_, **attr_):
+        child = _Node(name_, attr_)
+        self.children.append(child)
+        child.parent = self
+        return child
+
+    def find(self, name_, **attr_):
+        for child in self.children:
+            if name_ is None or name_ == child.name:
+                for nameAttr in attr_:
+                    if attr_[nameAttr] != child.attr[nameAttr]:
+                        break
+                else:
+                    yield child
+                for nodeSub in child.find(name_, **attr_):
+                    yield nodeSub
+
+    def findFirst(self, name_, **attr_):
+        for found in self.find(name_, **attr_):
+            return found
+        return None
+
+
+#===============================================================================
+
+class XMLConfig(CMDO.ExportedClass):
+
+    '''Provides read/write access to an XML configuration file with given
+    indentation, node ordering, and file name suffix.  If backup is a string,
+    e.g. '~', that string is appended to the file name.  If backup is a number
+    (n), n backup copies are maintained with the suffix and "-###" inserted
+    before the extension.  If reverse is True then new files get the versioned
+    name.'''
+
+    class ErrorHandler(object):
+        def __init__(self, path):
+            self.path = path
+        def error(self, e):
+            raise ExcXMLTweak('XML ERROR: "%s" ("%s")' % (str(e), self.path))
+        def fatalError(self, e):
+            raise ExcXMLTweak('XML FATAL: "%s" ("%s")' % (str(e), self.path))
+        def warning(self, e):
+            raise ExcXMLTweak('XML WARNING: "%s" ("%s")' % (str(e), self.path))
+
+    class NodeSorter(object):
+        def __init__(self, orderBy):
+            self.orderBy = orderBy
+        def __call__(self, node1, node2):
+            if node1 is None and node2 is None:
+                return 0
+            if node1 is None:
+                return -1
+            if node2 is None:
+                return +1
+            if node1.name < node2.name:
+                return -1
+            if node1.name > node2.name:
+                return +1
+            for name in self.orderBy.get(node1.name, []):
+                v1 = node1.attr[name]
+                v2 = node2.attr[name]
+                if v1 < v2:
+                    return -1
+                if v1 > v2:
+                    return +1
+            return 0
+
+    @staticmethod
+    def _readXML(path):
+        sToParse = ''
+        skipped = []
+        try:
+            try:
+                fIn = open(path)
+                skipping = True
+                for line in fIn:
+                    if skipping:
+                        s = line.strip()[:2]
+                        if not s or s == '<!' or s == '<?':
+                            skipped.append(line.rstrip())
+                        else:
+                            skipping = False
+                    if not skipping:
+                        sToParse += line
+            finally:
+                fIn.close()
+        except Exception, e:
+            raise ExcXMLTweak('Load error opening "%s": "%s"' % (path, str(e)))
+        return (sToParse, skipped)
+
+    def __init__(self,
+                 path    = None,
+                 pathOut = None,
+                 backup  = None,
+                 suffix  = None,
+                 indent  = '\t',
+                 orderBy = {},
+                 reverse = False):
+        self.path    = os.path.expanduser(path)
+        self.pathOut = pathOut
+        self.pathCur = None
+        self.backup  = backup
+        self.suffix  = suffix
+        self.indent  = indent
+        self.orderBy = orderBy
+        self.reverse = reverse
+        self.root    = None
+        self.skipped = []
+        # Internal members
+        self._nodeParse = None    # Used during load
+        if not self.pathOut:
+            self.pathOut = self.path
+        if not self.suffix:
+            self.suffix = CMDO.program.name
+        self.load()
+
+    def load(self):
+        self._parseComplete = False
+        if os.path.exists(self.path):
+            self.pathCur = self.path
+            try:
+                try:
+                    CMDO.info('Reading "%s"...' % self.path)
+                    (sToParse, self.skipped) = XMLConfig._readXML(self.path)
+                    if sToParse:
+                        xml.sax.parseString(sToParse, self, XMLConfig.ErrorHandler(self.path))
+                finally:
+                    self._parseComplete = True
+            except ExcXMLTweak, e:
+                raise e
+            except Exception, e:
+                if CMDO.debug:
+                    import traceback
+                    traceback.print_exc()
+                raise ExcXMLTweak('Load error parsing "%s": "%s"' % (self.path, str(e)))
+        else:
+            CMDO.info('File not found: "%s"' % self.path)
+
+    def save(self):
+        assert self.root
+        assert self.pathOut
+        self.root.children.sort(cmp = XMLConfig.NodeSorter(self.orderBy))
+        # Always write to a temp file before overwriting the original.
+        pathTmp = '%s!' % self.pathOut
+        try:
+            CMDO.info('Writing "%s"...' % self.pathOut)
+            fOut = open(pathTmp, 'w')
+        except Exception, e:
+            raise ExcXMLTweak('Save error opening "%s": "%s"' % (pathTmp, str(e)))
+        try:
+            try:
+                for line in self.skipped:
+                    fOut.write(line)
+                    fOut.write('\n')
+                self._write(fOut, self.root, 0)
+            finally:
+                fOut.close()
+        except Exception, e:
+            if CMDO.debug:
+                import traceback
+                traceback.print_exc()
+            raise ExcXMLTweak('Save error writing "%s": "%s"' % (pathTmp, str(e)))
+        try:
+            # Perform backup, if requested, and file exists.
+            self.pathCur = self.pathOut
+            if self.backup and os.path.exists(self.pathOut):
+                try:
+                    nVers = int(self.backup)
+                    path2 = CMDO.getVersionedPath(self.pathOut, self.suffix)
+                    if self.reverse:
+                        if nVers > 0:
+                            CMDO.purgeVersions(self.pathOut, self.suffix, nVers, reverse = True)
+                        self.pathCur = path2
+                    else:
+                        shutil.copyfile(self.pathOut, path2)
+                        if nVers > 0:
+                            CMDO.purgeVersions(self.pathOut, self.suffix, nVers)
+                        self.pathCur = self.pathOut
+                except ValueError:
+                    path2 = '%s%s' % (self.pathOut, self.backup)
+                    shutil.copyfile(self.pathOut, path2)
+                    self.pathCur = self.pathOut
+            shutil.move(pathTmp, self.pathCur)
+        except Exception, e:
+            raise ExcXMLTweak('Save error finalizing changes to "%s": "%s"'
+                                    % (self.pathOut, str(e)))
+
+    def setRoot(self, name_, **attrs_):
+        self.root = _Node(name_, attrs_)
+
+    def startElement(self, name, attrs):
+        if not self._parseComplete:
+            kw = {}
+            for key in attrs.keys():
+                kw[str(key)] = attrs.getValue(key)
+            if self.root is None:
+                self.root = self._nodeParse = _Node(name, kw)
+            else:
+                self._nodeParse = self._nodeParse.add(name, **kw)
+
+    def endElement(self, name):
+        self._nodeParse = self._nodeParse.parent
+
+    def endDocument(self):
+        self._parseComplete = True
+
+    def setDocumentLocator(self, locator): pass
+    def startDocument(self): pass
+    def startPrefixMapping(self, prefix, uri): pass
+    def startElementNS(self, name, qname, attr): pass
+    def endElementNS(self, name, qname): pass
+    def characters(self, content): pass
+    def ignorableWhitespace(self, whitespace): pass
+    def processingInstruction(self, target, data): pass
+    def skippedEntity(self, name): pass
+
+    def _write(self, f, node, level):
+        f.write('%s<%s' % (self.indent * level, node.name))
+        if node.attr:
+            names = node.attr.keys()
+            names.sort()
+            for name in names:
+                f.write(' %s="%s"' % (name, node.attr[name]))
+        if node.children:
+            f.write('>\n')
+            for child in node.children:
+                self._write(f, child, level + 1)
+            f.write('</%s>\n' % node.name)
+        else:
+            f.write('/>\n')
+
+
+#===============================================================================
+
+class ExcSetup(CMDO.ExcBase):
+    '''Setup operation exception'''
+    pass
+class ExcTile(CMDO.ExcBase):
+    '''Window tiling exception'''
+    pass
+class ExcAlignment(CMDO.ExcBase):
+    '''Window alignment exception'''
+    pass
+class ExcRoot(CMDO.ExcBase):
+    '''Root window access exception'''
+    pass
+class ExcWindow(CMDO.ExcBase):
+    '''Window management exception'''
+    pass
+class ExcWallpaper(CMDO.ExcBase):
+    '''Wallpaper management exception'''
+    pass
+class ExcWorkspace(CMDO.ExcBase):
+    '''Workspace management exception'''
+    pass
+class ExcHeartbeat(CMDO.ExcBase):
+    '''Heartbeat interval exception'''
+    pass
+class ExcProcess(CMDO.ExcBase):
+    '''Process management exception'''
+    pass
+class ExcSignal(CMDO.ExcBase):
+    '''Signal argument exception'''
+    pass
+class ExcOSD(CMDO.ExcBase):
+    '''On-screen display exception'''
+    pass
+class ExcXMLTweak(CMDO.ExcBase):
+    '''XML tweaking exception'''
+    pass
+
+
+#===============================================================================
+
+# Regular expressions to parse xprop output
+reProp1 = re.compile('^([A-Z_][A-Z_0-9]*)[ \t]*=[ \t]*(.*)[ \t]*$')
+reProp2 = re.compile('^([A-Z_][A-Z_0-9]*):[ \t]*window id #[ \t]*(.*)[ \t]*$')
+reGeom  = re.compile('^([0-9]+)x([0-9]+)[+\-]?([+\-][0-9]+)[+\-]?([+\-][0-9]+)$')
+reWid   = re.compile('^0x[0-9a-f]+$', re.IGNORECASE)
+reChild = re.compile('^  ( *)(0x[0-9a-f]+) (\(has no name\)|"[^"]*"): \(([^)]*)\).*')
+reFluxboxWorkspaceNames = re.compile(
+        '^[ \t]*session[.]screen([0-9]+)[.]workspaceNames[ \t]*:[ \t]*(.*)[ \t]*$', re.IGNORECASE)
+reFluxboxNameSplit = re.compile('[ \t]*,[ \t]*')
+
+
+#===============================================================================
+
+class Coordinate(CMDO.Integer):
+    '''An X Window coordinate value'''
+    def __init__(self, axis):
+        CMDO.Integer.__init__(self, '%s coordinate' % axis)
+
+class Alignment(CMDO.Integer):
+    '''A screen alignment between 1 and 9'''
+    def __init__(self, valueDef = None, descDef = None):
+        CMDO.Integer.__init__(self,
+                desc = 'alignment #', valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        value = CMDO.Integer.convert(self, value)
+        if value < 1 or value > 9:
+            raise ExcAlignment('Alignment # must be between 1 and 9')
+        return value
+
+class Tile(CMDO.Integer):
+    '''A screen tile position between 1 and 4'''
+    def __init__(self, tag = None, valueDef = None, descDef = None):
+        if tag:
+            desc = '%s tile #' % tag
+        else:
+            desc = 'tile #'
+        CMDO.Integer.__init__(self, desc = desc, valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        value = CMDO.Integer.convert(self, value)
+        if value != -1 and (value < 1 or value > 4):
+            raise ExcTile('Tile # must be between 1 and 4')
+        return value
+
+class TileFrom(Tile):
+    '''Starting tile #'''
+    def __init__(self):
+        Tile.__init__(self, tag = 'from')
+
+class TileTo(Tile):
+    '''Ending tile #'''
+    def __init__(self):
+        Tile.__init__(self, tag = 'to', valueDef = -1, descDef = 'from tile #')
+
+class Workspace(CMDO.TypeBase):
+    '''Workspace argument type'''
+    def __init__(self,
+            desc     = 'workspace # (1-n), name, "current", "next", or "previous"',
+            valueDef = None,
+            descDef  = None):
+        CMDO.TypeBase.__init__(self, desc = desc, valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        wRoot = WMRootWindow.get()
+        if CMDO.isString(value):
+            s = value.lower()
+            if s == 'current':
+                return wRoot.workspace
+            if s == 'next':
+                return ((wRoot.workspace - 1 + 1) % wRoot.workspaceCount) + 1
+            if s == 'previous':
+                return ((wRoot.workspace - 1 - 1) % wRoot.workspaceCount) + 1
+            # Look for the workspace by name?
+            try:
+                names = [name.lower() for name in wRoot.workspaceNames]
+                return names.index(s.lower()) + 1
+            except:
+                raise ExcWorkspace('Bad workspace name "%s"' % value)
+        try:
+            n = int(value)
+            if n <= 0 or n > wRoot.workspaceCount:
+                raise ExcWorkspace('Bad workspace # (%d)' % n)
+            return n
+        except:
+            raise ExcWorkspace('Bad workspace value "%s"' % value)
+
+class Title(CMDO.String):
+    '''Window title pattern'''
+    def __init__(self):
+        CMDO.String.__init__(self, desc = 'window title pattern')
+
+class ClassName(CMDO.String):
+    '''Window class name'''
+    def __init__(self):
+        CMDO.String.__init__(self, desc = 'window class name')
+
+class Window(CMDO.TypeBase):
+    '''A Window argument must be a hex window id (as used by xwininfo, xprop
+    and others), e.g. 0x12345678 or a WMWindow object.  WMWindow objects are
+    provided by functions like window_active(), window_root() or
+    window_search().'''
+    def __init__(self,
+             desc     = 'window id (hex 0xnnn...), window object or "pick"',
+             valueDef = None,
+             descDef  = None):
+        CMDO.TypeBase.__init__(self, desc = desc, valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        if isinstance(value, WMWindow):
+            return value
+        return WMWindow.get(value)
+
+class WallpaperTreatment(CMDO.Enum):
+    '''A wallpaper treatment for applying an image to the desktop'''
+    def __init__(self,
+            values   = ['tile', 'center', 'maxspect', 'scale'],
+            desc     = 'wallpaper treatment',
+            valueDef = 'tile',
+            descDef  = None):
+        CMDO.Enum.__init__(self, values, desc = desc, valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        return self.values.index(CMDO.Enum.convert(self, value))
+
+class FeatureList(CMDO.TagList):
+    '''Indicates which features to set up with key bindings, etc.  Returns a
+    list of feature objects.'''
+    def __init__(self, values = None, desc = None, valueDef = None, descDef = None):
+        if values is None or desc is None:
+            names = [f.name for f in Features.all]
+            if values is None:
+                values = names
+            if desc is None:
+                desc = 'comma-separated features (%s)' % '|'.join(names)
+        CMDO.TagList.__init__(self,
+                values = values, desc = desc, valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        return Features.FeatureSet(CMDO.TagList.convert(self, value))
+
+class Heartbeat(CMDO.Integer):
+    '''A heartbeat event interval.  Zero disables the interval.'''
+    def __init__(self, desc = None, valueDef = None):
+        self.values  = (0, 1, 5, 20, 60)
+        self.sValues = '|'.join([str(v) for v in self.values])
+        if desc is None:
+            desc = 'interval in minutes (%s)' % self.sValues
+        CMDO.Integer.__init__(self, desc = desc, valueDef = valueDef)
+    def convert(self, value):
+        if not value:
+            return 0
+        try:
+            i = int(value)
+            if i not in self.values:
+                raise ValueError()
+            return i
+        except ValueError:
+            raise ExcHeartbeat('Acceptable intervals are (%s)' % self.sValues)
+
+class Process(CMDO.Integer):
+    '''A process identified by PID or regular expression'''
+    def __init__(self, multiple = False):
+        self.multiple = multiple
+        CMDO.Integer.__init__(self, desc = 'process id or name pattern')
+    def convert(self, value):
+        if not value:
+            raise ExcProcess('No process specified')
+        try:
+            # First assume it's an integer
+            pid = int(value)
+            if not os.path.isdir(os.path.join('/proc', str(value))):
+                raise ExcProcess('There is no process %d' % pid)
+            if self.multiple:
+                return [pid]
+            return pid
+        except ValueError:
+            pass
+        # Then search by name/pattern
+        if value[0] == '^':
+            pat = value
+        else:
+            pat = '^%s' % value
+        if pat[-1] != '$':
+            pat += '$'
+        reName = re.compile(pat)
+        pids = []
+        for dir in glob.glob('/proc/[0-9]*'):
+            if os.path.isdir(dir):
+                status = os.path.join(dir, 'status')
+                if os.path.exists(status):
+                    f = open(status)
+                    for line in f:
+                        if line[:6] == 'Name:\t' and reName.match(line[6:].strip()):
+                            pids.append(int(os.path.split(dir)[1]))
+                    f.close()
+        if not pids:
+            raise ExcProcess('Could not find process %s' % value)
+        if self.multiple:
+            return pids
+        return pids[0]
+
+class Signal(CMDO.TypeBase):
+    '''A system signal for killing or interrupting processes'''
+    def __init__(self,
+             desc     = 'Signal number/name.  See "man 7 signal" or "man kill".',
+             valueDef = None,
+             descDef  = None):
+        CMDO.TypeBase.__init__(self, desc = desc, valueDef = valueDef, descDef = descDef)
+    def convert(self, value):
+        try:
+            return int(value)
+        except:
+            pass
+        if CMDO.isString(value):
+            try:
+                return getattr(signal, value.upper())
+            except:
+                pass
+            try:
+                return getattr(signal, 'SIG%s' % value.upper())
+            except:
+                pass
+        raise ExcSignal('Bad signal "%s"' % str(value))
+
+class Display(CMDO.String):
+    '''X Display'''
+    def __init__(self):
+        CMDO.String.__init__(self, desc = 'X display')
+    def getDefault(self):
+        display = os.environ['DISPLAY']
+        if display.find('.') == -1:
+            display = '%s.0' % display
+        return display
+
+class Event(CMDO.String):
+    '''Event tag, optionally prefixed with "key:" for keyboard events.'''
+    class ExcEvent(CMDO.ExcBase): pass
+    def __init__(self, valueDef = None):
+        CMDO.String.__init__(self, desc = 'event name', valueDef = valueDef)
+    def convert(self, value):
+        if not value:
+            raise Event.ExcEvent('Event must have a name')
+        # Lower-case the type tag and normalize key events
+        fields = value.split(':', 1)
+        if len(fields) == 1:
+            return value
+        fields[0] = fields[0].lower()
+        if fields[0] == 'key':
+            fields[1] = normalizeKey(fields[1])
+        return ':'.join(fields)
+
+class Action(CMDO.String):
+    '''Event action string with function call and arguments.'''
+    def __init__(self):
+        CMDO.String.__init__(self, desc = 'action command')
+
+class ActionIndex(CMDO.Integer):
+    '''Integer index specifying a particular action for an event.  Actions are
+    deleted by index.'''
+    def __init__(self):
+        CMDO.Integer.__init__(self, desc = 'action index', imin = 1)
+
+class EventPattern(CMDO.RegExp):
+    '''Regular expression for finding one or more events.'''
+    def __init__(self, desc = 'event name pattern', valueDef = '.*', descDef = 'all'):
+        CMDO.RegExp.__init__(self, desc = desc, valueDef = valueDef, descDef = descDef)
+
+class ActionPattern(CMDO.RegExp):
+    '''Regular expression for finding one or more event actions.'''
+    def __init__(self, desc = 'action string pattern', valueDef = '.*', descDef = 'all'):
+        CMDO.RegExp.__init__(self, desc = desc, valueDef = valueDef, descDef = descDef)
+
+
+#===============================================================================
+
+class Rectangle(object):
+
+    class RectangleException(Exception): pass
+
+    @staticmethod
+    def fromGeometryStrings(values):
+        return Rectangle(int(values[0]), int(values[1]), int(values[2]), int(values[3]))
+
+    @staticmethod
+    def fromGeometryString(s):
+        m = reGeom.match(s)
+        if not m:
+            raise Rectangle.RectangleException('Failed to convert geometry "%s" to rectangle' % s)
+        return Rectangle(int(m.group(3)), int(m.group(4)), int(m.group(1)), int(m.group(2)))
+
+    @staticmethod
+    def swallow(*rects):
+        '''Returns a rectangle encompassing the extremes of all rectangles'
+        corner coordinates.'''
+        if len(rects) == 0:
+            return None
+        rectRet = rects[0]
+        for rect in rects[1:]:
+            if rect.x < rectRet.x:
+                rectRet.w += (rectRet.x - rect.x)
+                rectRet.x = rect.x
+            if (rect.x + rect.w) > (rectRet.x + rectRet.w):
+                rectRet.w = rect.x + rect.w - rectRet.x
+            if rect.y < rectRet.y:
+                rectRet.h += (rectRet.y - rect.y)
+                rectRet.y = rect.y
+            if (rect.y + rect.h) > (rectRet.y + rectRet.h):
+                rectRet.h = rect.y + rect.h - rectRet.y
+        return rectRet
+
+    @staticmethod
+    def copy(rect):
+        return Rectangle(rect.x, rect.y, rect.w, rect.h)
+
+    def __init__(self, x = 0, y = 0, w = 0, h = 0):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
+    def empty(self):
+        return (self.w == 0 or self.h == 0)
+
+    def __repr__(self):
+        return '%dx%d%+d%+d' % (self.w, self.h, self.x, self.y)
+
+
+#===============================================================================
+
+class WMWindow(object, CMDO.ExportedClass):
+
+    '''Window class with properties'''
+
+    # Raises exceptions if window information can't be accessed for any reason
+    @staticmethod
+    def get(widIn = None, wRoot = None):
+        if wRoot is None:
+            wRoot = WMRootWindow.get()
+        if widIn is None or widIn.lower() == 'active':
+            if not wRoot.widActive:
+                raise ExcWindow('Unable to get active window')
+            widIn = wRoot.widActive
+        elif widIn.lower() == 'pick':
+            widIn = None
+            for line in os.popen('wndo-pick'):
+                f = line.lower().split()
+                if len(f) > 0:
+                    widIn = f[0]
+            if not widIn:
+                raise ExcWindow('No window picked')
+        # It should either be an integer or a string window id
+        try:
+            wid = '0x%x' % int(widIn)
+        except:
+            try:
+                m = reWid.match(widIn)
+                if m is None:
+                    raise ExcWindow('"%s" is not a valid window id' % widIn)
+                wid = widIn
+            except:
+                raise ExcWindow('%s is not a string or a number window id' % widIn)
+        w = WMWindow(wid)
+        w.wRoot = wRoot     # Cached for efficient access to root window
+        for line in os.popen('xwininfo -all -id %s' % wid):
+            f = line.lower().split()
+            if len(f) == 2:
+                if f[0] == 'width:':
+                    w.rectOuter.w = w.rectInner.w = int(f[1])
+                elif f[0] == 'height:':
+                    w.rectOuter.h = w.rectInner.h = int(f[1])
+                elif f[0] == '-geometry':
+                    geom = Rectangle.fromGeometryString(f[1])
+                    w.rectOuter.x = w.rectInner.x = geom.x
+                    w.rectOuter.y = w.rectInner.y = geom.y
+            elif len(f) >= 4 and f[0] == 'parent' and f[1] == 'window' and f[2] == 'id:':
+                if f[3] == w.wRoot.wid:
+                    w.wParent = w.wRoot
+                else:
+                    w.wParent = WMWindow.get(f[3], w.wRoot)
+            elif len(f) == 3 and f[0] == 'border' and f[1] == 'width:':
+                w.borderSize = int(f[2])
+                w.rectOuter.w += (2 * w.borderSize)
+                w.rectOuter.h += (2 * w.borderSize)
+        for line in os.popen('xprop -notype -id %s' % w.wid):
+            m = reProp1.match(line.strip())
+            if m is None:
+                m = reProp2.match(line.strip())
+            if m is not None:
+                name  = m.group(1)
+                v = m.group(2).split(', ')
+                for i in range(len(v)):
+                    if len(v[i]) > 0 and v[i][0] == '"':
+                        v[i] = v[i][1:]
+                        if v[i][-1] == '"':
+                            v[i] = v[i][:-1]
+                if len(v) == 1:
+                    v = v[0]
+                elif name == '_NET_FRAME_EXTENTS':
+                    # Recalculate rectangles now that we know the frame extents
+                    #TODO: Not really used (why not?)
+                    w.extentsFrame = (int(v[0]), int(v[1]), int(v[2]), int(v[3]))
+                w._dict[name] = v
+                if name == '_WIN_WORKSPACE':
+                    w.workspace = int(v) + 1    # Present workspace #'s as 1-n
+                # Gnome uses _NET_CURRENT_DESKTOP, rather than _WIN_WORKSPACE
+                elif name == '_NET_CURRENT_DESKTOP':
+                    w.workspace = int(v) + 1    # Present workspace #'s as 1-n
+                elif name == '_NET_WM_PID':
+                    w.pid = int(v)
+                elif name == 'WM_CLIENT_LEADER':
+                    if int(v, 16) != 0:
+                        w.widClientLeader = v
+        if w.rectInner.empty():
+            raise ExcWindow('Failed to get window size (id=%s)' % wid)
+        if w.wParent.wid != w.wRoot.wid:
+            w.rectOuter = Rectangle.copy(w.wParent.rectOuter)
+        return w
+
+    def __init__(self, wid):
+        self.wid             = wid
+        self.widClientLeader = None
+        self.rectInner       = Rectangle()
+        self.rectOuter       = Rectangle()
+        self.extentsFrame    = (0, 0, 0, 0)
+        self.wParent         = None
+        self.wRoot           = None
+        self.borderSize      = 0
+        self.workspace       = 1
+        self.workspaceNames  = []
+        self.pid             = 0
+        self._dict           = {}
+
+    def adjustRect(self, rect):
+        rect2 = Rectangle.copy(rect)
+        rect2.w -= (self.rectOuter.w - self.rectInner.w)
+        rect2.h -= (self.rectOuter.h - self.rectInner.h)
+        if rect2.x < self.wRoot.rectInner.x:
+            rect2.x = self.wRoot.rectInner.x
+        elif rect2.x >= (self.wRoot.rectInner.x + self.wRoot.rectInner.w - self.extentsFrame[0]):
+            rect2.x = self.wRoot.rectInner.x + self.wRoot.rectInner.w - self.extentsFrame[0] - 1
+        if rect2.y < self.wRoot.rectInner.y:
+            rect2.y = self.wRoot.rectInner.y
+        elif rect2.y >= (self.wRoot.rectInner.y + self.wRoot.rectInner.h - self.extentsFrame[0]):
+            rect2.y = self.wRoot.rectInner.y + self.wRoot.rectInner.h - self.extentsFrame[0] - 1
+        return rect2
+
+    def getMoveRect(self, x, y):
+        rect = Rectangle.copy(self.rectInner)
+        rect.x = x
+        rect.y = y
+        return self.adjustRect(rect)
+
+    def getAlignRect(self, align):
+        if align < 1 or align > 9:
+            return None
+        rect2 = self.rectOuter
+        alignx = (align - 1) % 3
+        aligny = int((align - 1) / 3)
+        if alignx == 0:
+            rect2.x = self.wRoot.xLeft
+        elif alignx == 1:
+            rect2.x = self.wRoot.xCenter - int(rect2.w / 2)
+        elif alignx == 2:
+            rect2.x = self.wRoot.xRight - rect2.w
+        if aligny == 0:
+            rect2.y = self.wRoot.yTop
+        elif aligny == 1:
+            rect2.y = self.wRoot.yMiddle - int(rect2.h / 2)
+        elif aligny == 2:
+            rect2.y = self.wRoot.yBottom - rect2.h
+        return self.adjustRect(rect2)
+
+    def getOuterTileRect(self, tile1, tile2):
+        rect1 = self.getTileRect(tile1)
+        rect2 = self.getTileRect(tile2)
+        if rect1 is None or rect2 is None:
+            raise ExcTile('Unable to tile to specified tile locations')
+        return Rectangle.swallow(rect1, rect2)
+
+    def getTileRect(self, tile):
+        return self.adjustRect(self.wRoot.getTileRect(tile))
+
+    def __getattr__(self, name):
+        try:
+            return self._dict[name]
+        except:
+            return None
+
+    def __repr__(self):
+        return self.wid
+
+
+#===============================================================================
+
+class WMTopChild(object):
+
+    def __init__(self, wid, title, clss):
+        self.wid   = wid
+        self.title = title
+        self.clss  = clss
+
+
+#===============================================================================
+
+class WMRootWindow(WMWindow):
+
+    '''Root window class with properties'''
+
+    @staticmethod
+    def get(withChildren = False):
+        w = WMRootWindow(None)
+        if withChildren:
+            opts = ' -all'
+        else:
+            opts = ''
+        for line in os.popen('xwininfo -root%s' % opts):
+            f = line.lower().split()
+            if len(f) == 2:
+                if f[0] == 'width:':
+                    w.rectOuter.w = w.rectInner.w = int(f[1])
+                elif f[0] == 'height:':
+                    w.rectOuter.h = w.rectInner.h = int(f[1])
+            elif len(f) == 2 and f[0] == '-geometry':
+                geom = Rectangle.fromGeometryString(f[1])
+                w.rectOuter.x = w.rectInner.x = geom.x
+                w.rectOuter.y = w.rectInner.y = geom.y
+            elif len(f) >= 4 and f[0] == 'xwininfo:' and f[1] == 'window' and f[2] == 'id:':
+                w.wid = f[3]
+            elif withChildren:
+                m = reChild.match(line)
+                if m is not None:
+                    indent = len(m.group(1)) / 3
+                    clss = [s[1:-1] for s in m.group(4).split(' ') if len(s) > 2]
+                    if len(clss) > 0:
+                        widChild = m.group(2)
+                        title = m.group(3)
+                        if title == '(has no name)':
+                            title = ''
+                        elif len(title) >= 2:
+                            title = title[1:-1]
+                        w.topChildren.append(WMTopChild(widChild, title, clss))
+        for line in os.popen('xprop -notype -root'):
+            m = reProp1.match(line.strip())
+            if m is None:
+                m = reProp2.match(line.strip())
+            if m is not None:
+                name  = m.group(1)
+                v = m.group(2).split(', ')
+                for i in range(len(v)):
+                    if len(v[i]) > 0 and v[i][0] == '"':
+                        v[i] = v[i][1:]
+                        if v[i][-1] == '"':
+                            v[i] = v[i][:-1]
+                if len(v) == 1:
+                    v = v[0]
+                if name == '_NET_ACTIVE_WINDOW':
+                    if CMDO.isString(v):
+                        w.widActive = v
+                    else:
+                        w.widActive = v[0]
+                elif name == '_WIN_WORKSPACE':
+                    w.workspace = int(v) + 1
+                # Gnome uses _NET_CURRENT_DESKTOP, rather than _WIN_WORKSPACE
+                elif name == '_NET_CURRENT_DESKTOP':
+                    w.workspace = int(v) + 1
+                elif name == '_WIN_WORKSPACE_NAMES':
+                    w.workspaceNames = v
+                elif name == '_WIN_WORKSPACE_COUNT':
+                    w.workspaceCount = int(v)
+                elif name == '_NET_NUMBER_OF_DESKTOPS':
+                    w.workspaceCount = int(v)
+                elif name == '_NET_DESKTOP_GEOMETRY':
+                    w.rectOuter.w = int(v[0])
+                    w.rectOuter.h = int(v[1])
+                elif name == '_NET_WORKAREA':
+                    # TODO: Assuming all workareas are identical so that
+                    # there's only one set of geometries.  Is this ok?
+                    w.rectInner = Rectangle.fromGeometryStrings(v[:4])
+                w._dict[name] = v
+        if w.rectOuter.empty() or w.rectInner.empty():
+            raise ExcRoot('Failed to get root window size')
+        if w.workspace is None:
+            raise ExcRoot('Failed to get active workspace')
+        w._initializeTile()
+        # Special fluxbox support for workspace names
+        w._getFluxboxProps()
+        return w
+
+    def __init__(self, wid):
+        WMWindow.__init__(self, wid)
+        self.topChildren = []
+
+    def _getFluxboxProps(self):
+        try:
+            pid = int(self._BLACKBOX_PID)
+            for s in open('/proc/%d/status' % pid):
+                if s.strip().lower() == 'name:\tfluxbox':
+                    self.fluxbox = True
+                    break
+            for s in open(os.path.expanduser('~/.fluxbox/init')):
+                m = reFluxboxWorkspaceNames.match(s.strip())
+                #TODO: Handle multiple screens
+                if m:
+                    names = reFluxboxNameSplit.split(m.group(2).strip())
+                    while names and not names[-1]:
+                        names.pop()
+                    if names:
+                        self.workspaceNames = names
+                    break
+            else:
+                return
+        except:
+            return
+
+    def _initializeTile(self):
+        self.xLeft   = self.rectInner.x
+        self.xCenter = self.rectInner.x + int(self.rectInner.w / 2)
+        self.xRight  = self.rectInner.x + self.rectInner.w
+        self.yTop    = self.rectInner.y
+        self.yMiddle = self.rectInner.y + int(self.rectInner.h / 2)
+        self.yBottom = self.rectInner.y + self.rectInner.h
+        w1 = int(self.rectInner.w * 2 / 3)
+        h1 = int(self.rectInner.h * 2 / 3)
+        w2 = self.rectInner.w - w1
+        h2 = self.rectInner.h - h1
+        self.rectsTile = [
+            Rectangle(self.xLeft      , self.yTop        , w1, h1),
+            Rectangle(self.xRight - w2, self.yTop        , w2, h1),
+            Rectangle(self.xLeft      , self.yBottom - h2, w1, h2),
+            Rectangle(self.xRight - w2, self.yBottom - h2, w2, h2)
+        ]
+
+    def getTileRect(self, tile):
+        if tile < 1 or tile > 4:
+            raise ExcTile('Invalid tile # (%d)' % tile)
+        return self.rectsTile[tile-1]
+
+    def search(self, title = None, cls = None, ws = None, pid = None):
+        if title is not None:
+            reTitle = re.compile(title, re.IGNORECASE)
+        else:
+            reTitle = None
+        if cls is not None:
+            lcls = cls.lower()
+        else:
+            lcls = None
+        found = []
+        for child in self.topChildren:
+            if reTitle is None or (child.title is not None and reTitle.search(child.title)):
+                if lcls is None or lcls in [clsChild.lower() for clsChild in child.clss]:
+                    w = WMWindow.get(widIn = child.wid, wRoot = self)
+                    if w is not None and (ws is None or ws == w.workspace + 1):
+                        if pid is None or pid == w.pid:
+                            found.append(w)
+        return found
+
+
+#===============================================================================
+
+@CMDO.export
+def checkInstall():
+    '''Validate installation by checking dependencies.'''
+    if not CMDO.findProgram('xwininfo'):
+        raise ExcSetup('"xwininfo" is required - please install')
+    if not CMDO.findProgram('xprop'):
+        raise ExcSetup('"xprop" is required - please install')
+    CMDO.info('Installation dependencies are satisfied.')
+
+
+#===============================================================================
+
+@CMDO.export(CMDO.String(desc = 'key string'))
+def normalizeKey(s):
+    '''Standardize keyboard key and modifier names and order them for
+    consistency.'''
+    fields = s.split('+')
+    mods = []
+    keys = []
+    for k in fields:
+        kl = k.lower()
+        if kl == 'mod1' or kl == 'alt' or kl == 'meta':
+            mods.append('Alt')
+        elif kl == 'mod2':
+            mods.append('Mod2')
+        elif kl == 'mod3':
+            mods.append('Mod3')
+        elif kl == 'mod4' or kl == 'super':
+            mods.append('Super')
+        elif kl == 'mod5' or kl == 'hyper':     #TODO: does hyper belong here?
+            mods.append('Mod5')
+        elif kl == 'shift':
+            mods.append('Shift')
+        else:
+            keys.append(k)
+    mods.sort()
+    keys.sort()
+    return '+'.join(mods + keys)
+
+
+# vim: filetype=python

@@ -1,0 +1,5 @@
+* Alarms?  Run at time?
+* Disable heartbeat events.
+* Improve latency for event handling.  E.g. daemon process using Dbus.
+* Document manual setup better.
+* Document config files used by wndo-spy/wndo, e.g. events.conf.
