@@ -17,3 +17,5 @@ Most features work with any window manager that is fully or mostly compatible wi
 WnDO is built on top of CmDO (pronounced "commando"), a Python facility that converts a set of "decorated" functions to a complete command-driven environment, with full help. See the required CmDO package for more information.
 
 New features can be installed simply by dropping module files into a user or shared directory.
+
+https://stacksocial.com/giveaways/saumsung-50-inch-4k-tv-media-device-giveaway
